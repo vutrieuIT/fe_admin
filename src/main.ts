@@ -4,6 +4,7 @@ import router from "./router";
 
 import "primevue/resources/themes/saga-blue/theme.css";
 import "/node_modules/primeflex/primeflex.min.css";
+import "primeicons/primeicons.css";
 import PrimeVue from "primevue/config";
 import ApiUtils from "./util/apiUtil";
 

@@ -51,6 +51,7 @@ import Button from "primevue/button";
 import InputText from "primevue/inputtext";
 import Checkbox from "primevue/checkbox";
 import ApiUtils from "@/util/apiUtil";
+import { useRouter } from "vue-router";
 
 import { defineComponent, ref } from "vue";
 
@@ -72,6 +73,8 @@ export default defineComponent({
     Checkbox,
   },
   setup() {
+    const router = useRouter();
+
     const loginData = ref<LoginDto>({
       email: "",
       password: "",
@@ -115,6 +118,7 @@ export default defineComponent({
       await ApiUtils.post("/login", loginData.value)
         .then((response) => {
           sessionStorage.setItem("token", response.data.token);
+          router.push("/dashboard");
         })
         .catch(() => {
           alert("Đăng nhập thất bại");
