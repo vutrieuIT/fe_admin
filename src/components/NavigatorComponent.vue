@@ -34,15 +34,15 @@ export default defineComponent({
     const router = useRouter();
     const tabActived = ref<number>(0);
     const listNav = ref<MenuItem[]>([
-      { label: "Dashboard", icon: "pi pi-home", to: "/dashboard" },
+      { label: "Dashboard", icon: "pi pi-home", to: "/admin/dashboard" },
       {
         label: "Products",
         icon: "pi pi-shopping-cart",
-        to: "/dashboard/products",
+        to: "/admin/products",
       },
-      { label: "Categories", icon: "pi pi-tags", to: "/dashboard/categories" },
-      { label: "Orders", icon: "pi pi-shopping-cart", to: "/dashboard/orders" },
-      { label: "Users", icon: "pi pi-user", to: "/dashboard/users" },
+      { label: "Categories", icon: "pi pi-tags", to: "/admin/categories" },
+      { label: "Orders", icon: "pi pi-shopping-cart", to: "/admin/orders" },
+      { label: "Users", icon: "pi pi-user", to: "/admin/users" },
       // {label: ""}
     ]);
 

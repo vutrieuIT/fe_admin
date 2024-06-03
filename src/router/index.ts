@@ -1,15 +1,15 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import LoginView from "@/views/LoginView.vue";
-// import HomeView from "@/views/HomeView.vue";
 import DashboardView from "@/views/DashboardView.vue";
 import ProductView from "@/views/ProductView.vue";
 import CategoriesView from "@/views/CategoriesView.vue";
 import OrderView from "@/views/OrderView.vue";
 import UserView from "@/views/UserView.vue";
+import AdminView from "@/views/AdminView.vue";
 const routes: Array<RouteRecordRaw> = [
   {
     path: "/",
-    redirect: "/dashboard",
+    redirect: "/admin/dashboard",
   },
   {
     path: "/login",
@@ -17,10 +17,15 @@ const routes: Array<RouteRecordRaw> = [
     component: LoginView,
   },
   {
-    path: "/dashboard",
-    name: "dashboard",
-    component: DashboardView,
+    path: "/admin",
+    name: "admin",
+    component: AdminView,
     children: [
+      {
+        path: "dashboard",
+        name: "dashboard",
+        component: DashboardView,
+      },
       {
         path: "products",
         name: "products",

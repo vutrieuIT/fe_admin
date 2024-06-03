@@ -118,7 +118,7 @@ export default defineComponent({
       await ApiUtils.post("/login", loginData.value)
         .then((response) => {
           sessionStorage.setItem("token", response.data.token);
-          router.push("/dashboard");
+          router.push("/admin/dashboard");
         })
         .catch(() => {
           alert("Đăng nhập thất bại");
