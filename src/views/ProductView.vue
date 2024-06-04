@@ -35,7 +35,7 @@
         type="button"
         label="Cancel"
         severity="secondary"
-        @click="visible = false"
+        @click="visibleConfirm = false"
       ></Button>
       <Button type="button" label="Delete" @click="callApiDetete"></Button>
     </div>
