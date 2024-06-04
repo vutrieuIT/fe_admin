@@ -6,11 +6,8 @@
     </div>
     <div class="col-10">
       <div class="flex">
-        <Button
-          class="block"
-          icon="pi pi-bars"
-          @click="toggleNavigator"
-        ></Button>
+        <Button class="block" icon="pi pi-bars" @click="toggleNavigator">
+        </Button>
       </div>
       <router-view />
     </div>

@@ -18,7 +18,11 @@
     </Column>
   </DataTable>
 
-  <CategoryDialog :visible="true" :data="{}" />
+  <CategoryDialog
+    v-model:visible="visible"
+    :data="selectedCategory"
+    @save="save"
+  />
 
   <Dialog v-model:visible="visibleConfirm" header="confirm delete">
     <p>
@@ -44,11 +48,13 @@ import Button from "primevue/button";
 import CategoryDialog from "@/components/CategoryDialog.vue";
 import ApiUtils from "@/util/apiUtil";
 import CategoryDto from "@/dto/categoryDto";
+import Dialog from "primevue/dialog";
 
 export default defineComponent({
   components: {
     DataTable,
     Column,
+    Dialog,
     Button,
     CategoryDialog,
   },
@@ -62,6 +68,14 @@ export default defineComponent({
         slug: "category-1",
         status: "active",
       },
+      {
+        id: 2,
+        created_at: "2021-09-02",
+        name: "Category 2",
+        parent_id: 0,
+        slug: "category-2",
+        status: "active",
+      },
     ]);
 
     const selectedCategory = ref({} as CategoryDto);
@@ -70,23 +84,25 @@ export default defineComponent({
     const visibleConfirm = ref(false);
 
     const editCategory = (category: unknown) => {
+      visible.value = true;
+      selectedCategory.value = { ...(category as CategoryDto) };
       console.log(category);
     };
 
     const deleteCategory = async (category: unknown) => {
-      selectedCategory.value = category as CategoryDto;
+      selectedCategory.value = { ...(category as CategoryDto) };
       visibleConfirm.value = true;
-      await ApiUtils.delete(`/categories/${selectedCategory.value.id}`)
-        .then((response) => {
-          console.log(response);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
     };
 
     const createCategory = () => {
+      selectedCategory.value = {} as CategoryDto;
+      visible.value = true;
       console.log("Create Category");
+    };
+
+    const save = (category: CategoryDto) => {
+      visible.value = false;
+      console.log(category);
     };
 
     const callApiInit = async () => {
@@ -122,6 +138,7 @@ export default defineComponent({
       deleteCategory,
       createCategory,
       callApiDetete,
+      save,
     };
   },
 });

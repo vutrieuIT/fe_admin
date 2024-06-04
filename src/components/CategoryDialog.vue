@@ -1,24 +1,38 @@
 <template>
-  <Dialog v-model:visible="visibleModel" header="Category" :modal="true">
-    <div class="p-fluid">
-      <div class="p-field">
-        <label for="name">Name</label>
-        <InputText id="name" v-model="dataModel.name" />
-      </div>
-      <div class="p-field">
-        <label for="slug">Slug</label>
-        <InputText id="slug" v-model="dataModel.slug" />
-      </div>
-      <div class="p-field">
-        <label for="status">Status</label>
-        <Dropdown
-          id="status"
-          v-model="dataModel.status"
-          :options="statusOptions"
-          optionLabel="name"
-          optionValue="value"
-        />
-      </div>
+  <Dialog
+    v-model:visible="visibleModel"
+    header="Category"
+    :modal="true"
+    :style="{ width: '25rem' }"
+  >
+    <div class="flex align-items-center gap-3 mb-3">
+      <label for="name" class="font-semibold w-6rem">Name</label>
+      <InputText
+        class="flex-auto"
+        autocomplete="off"
+        id="name"
+        v-model="dataModel.name"
+      />
+    </div>
+    <div class="flex align-items-center gap-3 mb-3">
+      <label class="font-semibold w-6rem" for="slug">Slug</label>
+      <InputText
+        class="flex-auto"
+        autocomplete="off"
+        id="slug"
+        v-model="dataModel.slug"
+      />
+    </div>
+    <div class="flex align-items-center gap-3 mb-3">
+      <label class="font-semibold w-6rem" for="status">Status</label>
+      <Dropdown
+        class="flex-auto"
+        id="status"
+        v-model="dataModel.status"
+        :options="statusOptions"
+        optionLabel="name"
+        optionValue="value"
+      />
     </div>
     <div class="flex justify-content-end gap-2">
       <Button
@@ -51,6 +65,7 @@ export default defineComponent({
     visible: Boolean,
     data: Object,
   },
+  emits: ["update:visible", "save"],
   setup(props, context) {
     const visibleModel = computed({
       get: () => props.visible,

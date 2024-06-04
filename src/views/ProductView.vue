@@ -1,6 +1,6 @@
 <template>
   <div>Products</div>
-  <div>
+  <div class="flex justify-content-end pr-2">
     <Button @click="visible = true">Add Product</Button>
   </div>
   <DataTable :value="data" rowGroupMode="rowspan" groupRowsBy="name">
