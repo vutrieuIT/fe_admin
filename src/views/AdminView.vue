@@ -1,5 +1,12 @@
 <template>
-  <div class="w-full bg-red-300">navbar</div>
+  <div class="w-full flex h-3rem mb-2">
+    <div
+      class="flex w-full h-full bg-primary justify-content-end pr-3 align-items-center"
+      style="background-color: aqua"
+    >
+      <h1>Admin</h1>
+    </div>
+  </div>
   <div class="grid">
     <div class="col-2">
       <NavigatorComponent />

@@ -1,5 +1,5 @@
 <template>
-  <div>User</div>
+  <div class="">User</div>
   <DataTable :value="users">
     <Column field="name" header="Name"></Column>
     <Column header="avatar">
@@ -59,7 +59,20 @@ export default defineComponent({
     Button,
   },
   setup() {
-    const users = ref([]);
+    const users = ref([
+      {
+        id: 1,
+        name: "Alice",
+        email: "Alice@gmail.com",
+        role: "admin",
+      },
+      {
+        id: 2,
+        name: "Bob",
+        email: "Bob@gmail.com",
+        role: "user",
+      },
+    ]);
 
     const callInitApi = async () => {
       await ApiUtils.get("/admin/user")
