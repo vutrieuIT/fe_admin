@@ -8,25 +8,49 @@ class ApiUtils {
   }
 
   public static async get(path: string): Promise<AxiosResponse> {
-    return axios.get(this.BASE_URL + path);
+    const token = this.getToken();
+    return axios.get(this.BASE_URL + path, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
   }
 
   public static async post(
     path: string,
     data?: unknown
   ): Promise<AxiosResponse> {
-    return axios.post(this.BASE_URL + path, data);
+    const token = this.getToken();
+    return axios.post(this.BASE_URL + path, data, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
   }
 
   public static async put(
     path: string,
     data?: unknown
   ): Promise<AxiosResponse> {
-    return axios.put(this.BASE_URL + path, data);
+    const token = this.getToken();
+    return axios.put(this.BASE_URL + path, data, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
   }
 
   public static async delete(path: string): Promise<AxiosResponse> {
-    return axios.delete(this.BASE_URL + path);
+    const token = this.getToken();
+    return axios.delete(this.BASE_URL + path, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  }
+
+  private static getToken() {
+    return sessionStorage.getItem("token") || "";
   }
 }
 

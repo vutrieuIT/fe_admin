@@ -1,16 +1,12 @@
-interface ProductTypeDto {
-  image: string;
-  color: string;
-  price: number;
-  amout: number;
-}
-
 interface ProductDto {
   id: number;
   name: string;
-  type: ProductTypeDto;
+  category: string;
   status: boolean;
+  image: string;
+  color: string;
+  price: number;
+  amount: number;
 }
 
 export default ProductDto;
-export { ProductTypeDto };
