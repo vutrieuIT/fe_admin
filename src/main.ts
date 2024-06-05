@@ -6,6 +6,7 @@ import "primevue/resources/themes/saga-blue/theme.css";
 import "/node_modules/primeflex/primeflex.min.css";
 import "primeicons/primeicons.css";
 import PrimeVue from "primevue/config";
+import ToastService from "primevue/toastservice";
 import ApiUtils from "./util/apiUtil";
 
 ApiUtils.init("http://localhost:3000");
@@ -13,4 +14,5 @@ ApiUtils.init("http://localhost:3000");
 const app = createApp(App);
 app.use(router);
 app.use(PrimeVue);
+app.use(ToastService);
 app.mount("#app");

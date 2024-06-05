@@ -33,7 +33,7 @@
         type="button"
         label="Cancel"
         severity="secondary"
-        @click="visible = false"
+        @click="visibleConfirm = false"
       ></Button>
       <Button type="button" label="Delete" @click="callApiDetete"></Button>
     </div>
@@ -100,6 +100,7 @@ export default defineComponent({
     const editUser = (user: unknown) => {
       selectedUser.value = user as User;
       visible.value = true;
+      console.log("Edit user", user);
     };
 
     const deleteUser = (user: unknown) => {
@@ -121,8 +122,8 @@ export default defineComponent({
 
     const save = async (user: unknown) => {
       visible.value = false;
-      console.log("Save user");
-      await ApiUtils.post("admin/user", user)
+      console.log("Save user", user);
+      await ApiUtils.post("admin/user", user as User)
         .then((res) => {
           console.log(res.data);
         })

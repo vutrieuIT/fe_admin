@@ -13,7 +13,7 @@
     </Column>
   </DataTable>
 
-  <OrderDialog v-model:visible="visible" :data="selectedOrder" />
+  <OrderDialog v-model:visible="visible" :data="selectedOrder" @save="save" />
 </template>
 
 <script lang="ts">
@@ -58,11 +58,17 @@ export default defineComponent({
       console.log(data);
     };
 
+    const save = (data: OrderDto) => {
+      console.log(data);
+      visible.value = false;
+    };
+
     return {
       data,
       visible,
       selectedOrder,
       editOrder,
+      save,
     };
   },
 });

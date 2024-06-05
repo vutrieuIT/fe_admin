@@ -38,6 +38,7 @@
       <Button type="button" label="Delete" @click="callApiDetete"></Button>
     </div>
   </Dialog>
+  <Toast position="bottom-right" />
 </template>
 
 <script lang="ts">
@@ -49,6 +50,8 @@ import CategoryDialog from "@/components/CategoryDialog.vue";
 import ApiUtils from "@/util/apiUtil";
 import CategoryDto from "@/dto/categoryDto";
 import Dialog from "primevue/dialog";
+import Toast from "primevue/toast";
+import { useToast } from "primevue/usetoast";
 
 export default defineComponent({
   components: {
@@ -57,8 +60,11 @@ export default defineComponent({
     Dialog,
     Button,
     CategoryDialog,
+    Toast,
   },
   setup() {
+    const toast = useToast();
+
     const data = ref([
       {
         id: 1,
@@ -102,14 +108,31 @@ export default defineComponent({
 
     const save = (category: CategoryDto) => {
       visible.value = false;
-      console.log(category);
+      ApiUtils.post("/categories", category)
+        .then((response) => {
+          toast.add({
+            severity: "success",
+            summary: "Success",
+            detail: "Data saved",
+            life: 3000,
+          });
+          console.log(response);
+        })
+        .catch((error) => {
+          toast.add({
+            severity: "error",
+            summary: "Error",
+            detail: "Data saved",
+            life: 3000,
+          });
+          console.log(error);
+        });
     };
 
     const callApiInit = async () => {
       await ApiUtils.get("/categories")
         .then((response) => {
           data.value = response.data;
-          console.log(response);
         })
         .catch((error) => {
           console.log(error);
@@ -122,9 +145,21 @@ export default defineComponent({
       visibleConfirm.value = false;
       await ApiUtils.delete(`/categories/${selectedCategory.value.id}`)
         .then((response) => {
+          toast.add({
+            severity: "success",
+            summary: "Success",
+            detail: "Data deleted",
+            life: 3000,
+          });
           console.log(response);
         })
         .catch((error) => {
+          toast.add({
+            severity: "error",
+            summary: "Error",
+            detail: "Data deleted",
+            life: 3000,
+          });
           console.log(error);
         });
     };
