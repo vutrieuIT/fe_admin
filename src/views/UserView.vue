@@ -38,6 +38,7 @@
       <Button type="button" label="Delete" @click="callApiDetete"></Button>
     </div>
   </Dialog>
+  <Toast position="bottom-right" />
 </template>
 
 <script lang="ts">
@@ -49,6 +50,8 @@ import User from "@/dto/userDto";
 import ApiUtils from "@/util/apiUtil";
 import Dialog from "primevue/dialog";
 import Button from "primevue/button";
+import Toast from "primevue/toast";
+import { useToast } from "primevue/usetoast";
 
 export default defineComponent({
   components: {
@@ -57,8 +60,11 @@ export default defineComponent({
     UserDialog,
     Dialog,
     Button,
+    Toast,
   },
   setup() {
+    const toast = useToast();
+
     const users = ref([
       {
         id: 1,
@@ -113,9 +119,21 @@ export default defineComponent({
       visibleConfirm.value = false;
       await ApiUtils.delete(`/admin/user/${selectedUser.value.id}`)
         .then((res) => {
+          toast.add({
+            severity: "success",
+            summary: "Successful",
+            detail: "User deleted",
+            life: 3000,
+          });
           console.log(res.data);
         })
         .catch((err) => {
+          toast.add({
+            severity: "error",
+            summary: "Error",
+            detail: "Delete user failed",
+            life: 3000,
+          });
           console.log("call api error: Delete user");
         });
     };
@@ -125,10 +143,22 @@ export default defineComponent({
       console.log("Save user", user);
       await ApiUtils.post("admin/user", user as User)
         .then((res) => {
+          toast.add({
+            severity: "success",
+            summary: "Successful",
+            detail: "User saved",
+            life: 3000,
+          });
           console.log(res.data);
         })
         .catch((err) => {
-          console.log("call api error: Save user", err.response.data);
+          toast.add({
+            severity: "error",
+            summary: "Error",
+            detail: "Save user failed",
+            life: 3000,
+          });
+          console.log("call api error: Save user", err.response?.data);
         });
     };
 

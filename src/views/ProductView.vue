@@ -23,7 +23,11 @@
       </template>
     </Column>
   </DataTable>
-  <ProductDialog v-model:visible="visible" :data="selectedProduct" />
+  <ProductDialog
+    v-model:visible="visible"
+    :data="selectedProduct"
+    @save="save"
+  />
 
   <Dialog v-model:visible="visibleConfirm" header="confirm delete">
     <p>
@@ -40,6 +44,7 @@
       <Button type="button" label="Delete" @click="callApiDetete"></Button>
     </div>
   </Dialog>
+  <Toast position="bottom-right" />
 </template>
 
 <script lang="ts">
@@ -51,6 +56,8 @@ import ProductDialog from "@/components/ProductDialog.vue";
 import ProductDto from "@/dto/productDto";
 import ApiUtils from "@/util/apiUtil";
 import Dialog from "primevue/dialog";
+import Toast from "primevue/toast";
+import { useToast } from "primevue/usetoast";
 
 export default defineComponent({
   components: {
@@ -59,8 +66,11 @@ export default defineComponent({
     Button,
     ProductDialog,
     Dialog,
+    Toast,
   },
   setup() {
+    const toast = useToast();
+
     const data = ref([
       {
         id: 1,
@@ -118,13 +128,47 @@ export default defineComponent({
       console.log(data);
     };
 
+    const save = (data: ProductDto) => {
+      console.log(data);
+      visible.value = false;
+      ApiUtils.post("/admin/product", data)
+        .then(() => {
+          toast.add({
+            severity: "success",
+            summary: "Success",
+            detail: "Product saved",
+            life: 3000,
+          });
+        })
+        .catch(() => {
+          toast.add({
+            severity: "error",
+            summary: "Error",
+            detail: "Product save failed",
+            life: 3000,
+          });
+        });
+    };
+
     const callApiDetete = async () => {
       visibleConfirm.value = false;
       ApiUtils.delete(`/admin/product/${selectedProduct.value.id}`)
         .then((res) => {
+          toast.add({
+            severity: "success",
+            summary: "Success",
+            detail: "Product deleted",
+            life: 3000,
+          });
           console.log(res.data);
         })
         .catch((err) => {
+          toast.add({
+            severity: "error",
+            summary: "Error",
+            detail: "Product delete failed",
+            life: 3000,
+          });
           console.log("call api error: Delete product");
         });
     };
@@ -138,6 +182,7 @@ export default defineComponent({
       editProduct,
       deleteProduct,
       callApiDetete,
+      save,
     };
   },
 });
