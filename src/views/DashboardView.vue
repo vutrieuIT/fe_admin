@@ -1,5 +1,5 @@
 <template>
-  <div>Dashboard</div>
+  <div class="text-2xl">Dashboard</div>
   <div class="grid">
     <div class="col-6">
       <h3>order</h3>
