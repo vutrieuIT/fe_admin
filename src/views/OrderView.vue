@@ -14,7 +14,6 @@
   </DataTable>
 
   <OrderDialog v-model:visible="visible" :data="selectedOrder" @save="save" />
-  <Toast position="bottom-right" />
 </template>
 
 <script lang="ts">
@@ -24,7 +23,6 @@ import Column from "primevue/column";
 import OrderDto from "@/dto/orderDto";
 import Button from "primevue/button";
 import OrderDialog from "@/components/OrderDialog.vue";
-import Toast from "primevue/toast";
 import { useToast } from "primevue/usetoast";
 import ApiUtils from "@/util/apiUtil";
 
@@ -34,7 +32,6 @@ export default defineComponent({
     Column,
     Button,
     OrderDialog,
-    Toast,
   },
   setup() {
     const toast = useToast();

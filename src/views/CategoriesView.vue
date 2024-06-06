@@ -38,7 +38,6 @@
       <Button type="button" label="Delete" @click="callApiDetete"></Button>
     </div>
   </Dialog>
-  <Toast position="bottom-right" />
 </template>
 
 <script lang="ts">
@@ -50,7 +49,6 @@ import CategoryDialog from "@/components/CategoryDialog.vue";
 import ApiUtils from "@/util/apiUtil";
 import CategoryDto from "@/dto/categoryDto";
 import Dialog from "primevue/dialog";
-import Toast from "primevue/toast";
 import { useToast } from "primevue/usetoast";
 
 export default defineComponent({
@@ -60,7 +58,6 @@ export default defineComponent({
     Dialog,
     Button,
     CategoryDialog,
-    Toast,
   },
   setup() {
     const toast = useToast();

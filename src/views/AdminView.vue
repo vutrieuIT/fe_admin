@@ -35,6 +35,7 @@
           <Button
             icon="pi pi-power-off"
             class="p-button-rounded p-button-text"
+            @click="logout"
           ></Button>
         </div>
       </template>
@@ -56,11 +57,16 @@ import Button from "primevue/button";
 import Menubar from "primevue/menubar";
 import InputText from "primevue/inputtext";
 import Avatar from "primevue/avatar";
+import { useRouter } from "vue-router";
+import { useToast } from "primevue/usetoast";
 
 export default defineComponent({
   components: { NavigatorComponent, Button, Menubar, InputText, Avatar },
   setup() {
-    const isShowNavigator = ref<boolean>(false);
+    const router = useRouter();
+
+    const toast = useToast();
+
     const items = ref([
       {
         label: "Messages",
@@ -71,10 +77,18 @@ export default defineComponent({
         icon: "pi pi-bell",
       },
     ]);
-    // const toggleNavigator = () => {
-    //   isShowNavigator.value = !isShowNavigator.value;
-    // };
-    return { isShowNavigator, items };
+
+    const logout = () => {
+      sessionStorage.removeItem("token");
+      router.push("/login");
+      toast.add({
+        severity: "success",
+        summary: "Success",
+        detail: "Logged out successfully",
+        life: 3000,
+      });
+    };
+    return { items, logout };
   },
 });
 </script>
