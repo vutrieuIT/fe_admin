@@ -6,8 +6,13 @@
   <DataTable :value="data">
     <Column field="name" header="Name"></Column>
     <Column field="slug" header="Slug"></Column>
-    <Column field="status" header="Status"></Column>
-    <Column field="created_at" header="Created At"></Column>
+    <Column field="position" header="Position"></Column>
+    <Column field="show_hide" header="Show/Hide"></Column>
+    <Column header="Created At">
+      <template #body="slotProps">
+        {{ new Date(slotProps.data.created_at).toLocaleDateString() }}
+      </template>
+    </Column>
     <Column header="Actions">
       <template #body="slotProps">
         <Button @click="editCategory(slotProps.data)">Edit</Button>
@@ -62,24 +67,7 @@ export default defineComponent({
   setup() {
     const toast = useToast();
 
-    const data = ref([
-      {
-        id: 1,
-        created_at: "2021-09-01",
-        name: "Category 1",
-        parent_id: 0,
-        slug: "category-1",
-        status: "active",
-      },
-      {
-        id: 2,
-        created_at: "2021-09-02",
-        name: "Category 2",
-        parent_id: 0,
-        slug: "category-2",
-        status: "active",
-      },
-    ]);
+    const data = ref([]);
 
     const selectedCategory = ref({} as CategoryDto);
 
@@ -103,17 +91,26 @@ export default defineComponent({
       console.log("Create Category");
     };
 
-    const save = (category: CategoryDto) => {
+    const save = async (category: CategoryDto) => {
+      console.log("save");
       visible.value = false;
-      ApiUtils.post("/categories", category)
-        .then((response) => {
+      if (category.id) {
+        await callApiUpdate(category);
+      } else {
+        await callApiCreate(category);
+      }
+    };
+
+    const callApiCreate = async (category: CategoryDto) => {
+      await ApiUtils.post("/api/danh-muc-san-pham", category)
+        .then(() => {
           toast.add({
             severity: "success",
             summary: "Success",
             detail: "Data saved",
             life: 3000,
           });
-          console.log(response);
+          callApiInit();
         })
         .catch((error) => {
           toast.add({
@@ -126,8 +123,30 @@ export default defineComponent({
         });
     };
 
+    const callApiUpdate = async (category: CategoryDto) => {
+      await ApiUtils.put(`/api/danh-muc-san-pham`, category)
+        .then(() => {
+          toast.add({
+            severity: "success",
+            summary: "Success",
+            detail: "Data updated",
+            life: 3000,
+          });
+          callApiInit();
+        })
+        .catch((error) => {
+          toast.add({
+            severity: "error",
+            summary: "Error",
+            detail: "Data updated",
+            life: 3000,
+          });
+          console.log(error);
+        });
+    };
+
     const callApiInit = async () => {
-      await ApiUtils.get("/categories")
+      await ApiUtils.get("/api/danh-muc-san-pham")
         .then((response) => {
           data.value = response.data;
         })
@@ -140,15 +159,17 @@ export default defineComponent({
 
     const callApiDetete = async () => {
       visibleConfirm.value = false;
-      await ApiUtils.delete(`/categories/${selectedCategory.value.id}`)
-        .then((response) => {
+      await ApiUtils.delete(
+        `/api/danh-muc-san-pham/${selectedCategory.value.id}`
+      )
+        .then(() => {
           toast.add({
             severity: "success",
             summary: "Success",
             detail: "Data deleted",
             life: 3000,
           });
-          console.log(response);
+          callApiInit();
         })
         .catch((error) => {
           toast.add({

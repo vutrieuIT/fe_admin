@@ -52,6 +52,7 @@ import InputText from "primevue/inputtext";
 import Checkbox from "primevue/checkbox";
 import ApiUtils from "@/util/apiUtil";
 import { useRouter } from "vue-router";
+import { useToast } from "primevue/usetoast";
 
 import { defineComponent, ref } from "vue";
 
@@ -73,6 +74,7 @@ export default defineComponent({
     Checkbox,
   },
   setup() {
+    const toast = useToast();
     const router = useRouter();
 
     const loginData = ref<LoginDto>({
@@ -115,13 +117,22 @@ export default defineComponent({
       if (!validateForm()) {
         return;
       }
-      await ApiUtils.post("/login", loginData.value)
+      await ApiUtils.post("/api/login", loginData.value)
         .then((response) => {
           sessionStorage.setItem("token", response.data.token);
+          console.log("login:", response.data);
+
           router.push("/admin/dashboard");
         })
-        .catch(() => {
-          alert("Đăng nhập thất bại");
+        .catch((err) => {
+          const msg = err.response?.data;
+          toast.add({
+            severity: "error",
+            summary: "Error",
+            detail: msg ? msg : "Đăng nhập thất bại",
+            life: 3000,
+          });
+          console.log("login:", err);
         });
     };
 

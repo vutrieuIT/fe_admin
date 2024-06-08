@@ -9,7 +9,7 @@ import PrimeVue from "primevue/config";
 import ToastService from "primevue/toastservice";
 import ApiUtils from "./util/apiUtil";
 
-ApiUtils.init("http://localhost:3000");
+ApiUtils.init("http://localhost:8001");
 
 const app = createApp(App);
 app.use(router);

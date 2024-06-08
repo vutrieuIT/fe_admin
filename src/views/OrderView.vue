@@ -65,7 +65,7 @@ export default defineComponent({
     const save = (data: OrderDto) => {
       console.log(data);
       visible.value = false;
-      ApiUtils.post("/admin/order", data)
+      ApiUtils.post("/api/order", data)
         .then(() => {
           toast.add({
             severity: "success",

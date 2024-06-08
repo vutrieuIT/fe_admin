@@ -9,7 +9,7 @@ import AdminView from "@/views/AdminView.vue";
 const routes: Array<RouteRecordRaw> = [
   {
     path: "/",
-    redirect: "/admin/dashboard",
+    redirect: "/login",
   },
   {
     path: "/login",
