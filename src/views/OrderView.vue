@@ -1,5 +1,5 @@
 <template>
-  <div>Orders</div>
+  <div class="text-2xl">Orders</div>
   <DataTable :value="data" header="Order">
     <Column field="id" header="ID"></Column>
     <Column field="user" header="User"></Column>

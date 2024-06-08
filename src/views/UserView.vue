@@ -1,5 +1,5 @@
 <template>
-  <div class="">User</div>
+  <div class="text-2xl">User</div>
   <DataTable :value="users">
     <Column field="name" header="Name"></Column>
     <Column header="avatar">
@@ -83,7 +83,7 @@ export default defineComponent({
           users.value = res.data;
           console.log(users.value);
         })
-        .catch((err) => {
+        .catch(() => {
           console.log("call api error: Init user");
         });
     };
@@ -124,7 +124,7 @@ export default defineComponent({
           });
           console.log(res.data);
         })
-        .catch((err) => {
+        .catch(() => {
           toast.add({
             severity: "error",
             summary: "Error",

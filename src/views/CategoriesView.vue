@@ -1,5 +1,5 @@
 <template>
-  <div>Categories</div>
+  <div class="text-2xl">Categories</div>
   <div class="flex justify-content-end pr-2">
     <Button @click="createCategory">Create</Button>
   </div>

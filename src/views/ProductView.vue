@@ -1,5 +1,5 @@
 <template>
-  <div>Products</div>
+  <div class="text-2xl">Products</div>
   <div class="flex justify-content-end pr-2">
     <Button @click="createProduct">Add Product</Button>
   </div>
@@ -159,7 +159,7 @@ export default defineComponent({
           });
           console.log(res.data);
         })
-        .catch((err) => {
+        .catch(() => {
           toast.add({
             severity: "error",
             summary: "Error",
