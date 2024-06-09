@@ -10,7 +10,15 @@
       </template>
     </Column>
     <Column field="name" header="Name"></Column>
-    <Column field="image" header="Image"></Column>
+    <Column header="Image">
+      <template #body="slotProps">
+        <img
+          :src="slotProps.data.image"
+          alt="image"
+          style="width: 50px; height: 50px"
+        />
+      </template>
+    </Column>
     <Column field="color" header="Color"></Column>
     <Column field="price" header="Price"></Column>
     <Column field="status" header="Status"></Column>
@@ -31,7 +39,7 @@
 
   <Dialog v-model:visible="visibleConfirm" header="confirm delete">
     <p>
-      Are you sure you want to delete this product? {{ selectedProduct.name }},
+      Are you sure you want to delete this variant? {{ selectedProduct.name }},
       color: {{ selectedProduct.color }}
     </p>
     <div class="flex justify-content-end gap-2">
@@ -50,12 +58,14 @@
 import Button from "primevue/button";
 import Column from "primevue/column";
 import DataTable from "primevue/datatable";
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref, watch, inject } from "vue";
 import ProductDialog from "@/components/ProductDialog.vue";
 import ProductDto from "@/dto/productDto";
 import ApiUtils from "@/util/apiUtil";
 import Dialog from "primevue/dialog";
 import { useToast } from "primevue/usetoast";
+import { convertToProductDtos } from "@/dto/productAdminDto";
+import { useRouter } from "vue-router";
 
 export default defineComponent({
   components: {
@@ -66,57 +76,32 @@ export default defineComponent({
     Dialog,
   },
   setup() {
+    const eventBus = inject("eventBus") as any;
     const toast = useToast();
+    const router = useRouter();
 
-    const data = ref([
-      {
-        id: 1,
-        name: "Product 1",
-        image: 1,
-        color: "red",
-        price: 100,
-        amount: 10,
-      },
-      {
-        id: 1,
-        name: "Product 1",
-        image: 2,
-        color: "blue",
-        price: 200,
-        amount: 20,
-      },
-      {
-        id: 2,
-        name: "Product 2",
-        image: 1,
-        color: "red",
-        price: 100,
-        amount: 10,
-      },
-      {
-        id: 2,
-        name: "Product 2",
-        image: 2,
-        color: "blue",
-        price: 200,
-        amount: 20,
-      },
-    ]);
+    const dataApi = ref([]);
+
+    const data = ref([] as ProductDto[]);
 
     const selectedProduct = ref({} as ProductDto);
+
+    watch(dataApi, (newVal) => {
+      data.value = convertToProductDtos(newVal);
+    });
 
     const visible = ref(false);
     const visibleConfirm = ref(false);
 
     const createProduct = () => {
-      visible.value = true;
-      console.log("createProduct");
+      router.push("/admin/products/mng");
     };
 
-    const editProduct = (data: unknown) => {
-      selectedProduct.value = { ...(data as ProductDto) };
-      visible.value = true;
-      console.log(data);
+    const editProduct = (data: ProductDto) => {
+      // selectedProduct.value = { ...(data as ProductDto) };
+      // visible.value = true;
+      // console.log(data);
+      router.push(`/admin/products/mng/${data.id}`);
     };
 
     const deleteProduct = (data: unknown) => {
@@ -128,7 +113,7 @@ export default defineComponent({
     const save = (data: ProductDto) => {
       console.log(data);
       visible.value = false;
-      ApiUtils.post("/admin/product", data)
+      ApiUtils.post("/api/san-pham", data)
         .then(() => {
           toast.add({
             severity: "success",
@@ -149,7 +134,9 @@ export default defineComponent({
 
     const callApiDetete = async () => {
       visibleConfirm.value = false;
-      ApiUtils.delete(`/admin/product/${selectedProduct.value.id}`)
+      ApiUtils.delete(
+        `/api/san-pham/variant/${selectedProduct.value.variant_id}`
+      )
         .then((res) => {
           toast.add({
             severity: "success",
@@ -157,6 +144,7 @@ export default defineComponent({
             detail: "Product deleted",
             life: 3000,
           });
+          callApiInit();
           console.log(res.data);
         })
         .catch(() => {
@@ -169,6 +157,24 @@ export default defineComponent({
           console.log("call api error: Delete product");
         });
     };
+
+    const callApiInit = async () => {
+      ApiUtils.get("/api/san-pham")
+        .then((res) => {
+          dataApi.value = res.data;
+        })
+        .catch(() => {
+          console.log("call api error: Init product");
+        });
+    };
+
+    // call when component created
+    callApiInit();
+    eventBus.on("update:product", (data: string) => {
+      if (data === "success") {
+        callApiInit();
+      }
+    });
 
     return {
       data,
