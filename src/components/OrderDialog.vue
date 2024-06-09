@@ -8,7 +8,7 @@
     <div class="flex align-items-center gap-3 mb-3">
       <label for="id" class="font-semibold w-6rem">id</label>
       <InputText
-        v-model="dataModel.id"
+        v-model="dataModel.order_number"
         id="id"
         class="flex-auto"
         autocomplete="off"
@@ -17,7 +17,7 @@
     <div class="flex align-items-center gap-3 mb-3">
       <label for="user" class="font-semibold w-6rem">user</label>
       <InputText
-        v-model="dataModel.user"
+        v-model="dataModel.full_name"
         id="user"
         class="flex-auto"
         autocomplete="off"
@@ -40,7 +40,11 @@
         @click="$emit('update:visible', false)"
         class="p-button-secondary"
       ></Button>
-      <Button label="Save" @click="$emit('save')" class="mr-2"></Button>
+      <Button
+        label="Save"
+        @click="$emit('save', dataModel)"
+        class="mr-2"
+      ></Button>
     </template>
   </Dialog>
 </template>
@@ -68,10 +72,9 @@ export default defineComponent({
 
   setup(props, context) {
     const statusOptions = [
-      { label: "Delivered", value: "Delivered" },
-      { label: "Pending", value: "Pending" },
-      { label: "Canceled", value: "Canceled" },
-      { label: "approved", value: "approved" },
+      { label: "Paid", value: "paid" },
+      { label: "Pending", value: "pending" },
+      { label: "Unpaid", value: "unpaid" },
     ];
 
     const visibleModel = computed({

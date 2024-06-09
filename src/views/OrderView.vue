@@ -1,11 +1,11 @@
 <template>
   <div class="text-2xl">Orders</div>
   <DataTable :value="data" header="Order">
-    <Column field="id" header="ID"></Column>
-    <Column field="user" header="User"></Column>
+    <Column field="order_number" header="order id"></Column>
+    <Column field="full_name" header="User"></Column>
     <Column field="total" header="Total"></Column>
     <Column field="status" header="Status"></Column>
-    <Column field="createDate" header="Create Date"></Column>
+    <Column field="date_create" header="Create Date"></Column>
     <Column header="Actions">
       <template #body="slotProps">
         <Button @click="editOrder(slotProps.data)">Edit</Button>
@@ -36,22 +36,7 @@ export default defineComponent({
   setup() {
     const toast = useToast();
 
-    const data = [
-      {
-        id: 1,
-        user: "John Doe",
-        total: 50,
-        status: "Delivered",
-        createDate: "2021-01-01",
-      },
-      {
-        id: 2,
-        user: "Jane Doe",
-        total: 100,
-        status: "Pending",
-        createDate: "2021-01-01",
-      },
-    ];
+    const data = ref([] as OrderDto[]);
 
     const visible = ref(false);
     const selectedOrder = ref({} as OrderDto);
@@ -65,7 +50,7 @@ export default defineComponent({
     const save = (data: OrderDto) => {
       console.log(data);
       visible.value = false;
-      ApiUtils.post("/api/order", data)
+      ApiUtils.put("/api/order", data)
         .then(() => {
           toast.add({
             severity: "success",
@@ -73,6 +58,7 @@ export default defineComponent({
             detail: "Order saved",
             life: 3000,
           });
+          callApiInit();
         })
         .catch(() => {
           toast.add({
@@ -83,6 +69,20 @@ export default defineComponent({
           });
         });
     };
+
+    //
+    const callApiInit = async () => {
+      await ApiUtils.get("/api/order")
+        .then((response) => {
+          data.value = response.data.orders;
+          console.log(response.data.orders);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    };
+
+    callApiInit();
 
     return {
       data,
