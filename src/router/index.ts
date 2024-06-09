@@ -2,6 +2,7 @@ import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import LoginView from "@/views/LoginView.vue";
 import DashboardView from "@/views/DashboardView.vue";
 import ProductView from "@/views/ProductView.vue";
+import ManagerProductView from "@/views/ManagerProductView.vue";
 import CategoriesView from "@/views/CategoriesView.vue";
 import OrderView from "@/views/OrderView.vue";
 import UserView from "@/views/UserView.vue";
@@ -30,6 +31,11 @@ const routes: Array<RouteRecordRaw> = [
         path: "products",
         name: "products",
         component: ProductView,
+      },
+      {
+        path: "products/mng/:id?",
+        name: "products-mng",
+        component: ManagerProductView,
       },
       {
         path: "categories",
