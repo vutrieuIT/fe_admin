@@ -1,20 +1,21 @@
 <template>
   <div class="text-2xl">Dashboard</div>
   <div class="grid">
-    <div class="col-6">
+    <div class="col-12">
       <h3>order</h3>
-      <Chart type="line" :data="data" :options="options" />
+      <Chart type="bar" :data="data" :options="options" />
     </div>
-    <div class="col-6">
+    <div class="col-12">
       <h3>Sale</h3>
-      <Chart type="line" :data="data" :options="options" />
+      <Chart type="bar" :data="dataRevenue" :options="options" />
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, onMounted, ref } from "vue";
 import Chart from "primevue/chart";
+import ApiUtils from "@/util/apiUtil";
 
 export default defineComponent({
   name: "DashboardView",
@@ -22,24 +23,45 @@ export default defineComponent({
     Chart,
   },
   setup() {
-    const data = {
-      labels: ["January", "February", "March", "April", "May", "June", "July"],
-      datasets: [
-        {
-          label: "Sales",
-          data: [65, 59, 80, 81, 56, 55, 40],
-        },
-      ],
-    };
+    const data = ref({});
+
+    const dataRevenue = ref({});
 
     const options = {
+      aspectRatio: 3,
       scales: {
         y: {
           beginAtZero: true,
         },
       },
     };
-    return { data, options };
+
+    const callApiSales = async () => {
+      // call api
+      await ApiUtils.get(
+        "/api/sumary/sales?startDate=2024-04-01&endDate=2024-05-01"
+      ).then((res) => {
+        data.value = res.data;
+      });
+    };
+
+    const callApiRevenue = async () => {
+      // call api
+      await ApiUtils.get(
+        "/api/sumary/revenue?startDate=2024-04-01&endDate=2024-05-01"
+      ).then((res) => {
+        dataRevenue.value = res.data;
+        console.log(dataRevenue.value);
+      });
+    };
+
+    //
+    onMounted(() => {
+      callApiSales();
+      callApiRevenue();
+    });
+
+    return { data, dataRevenue, options };
   },
 });
 </script>
