@@ -7,6 +7,7 @@ import CategoriesView from "@/views/CategoriesView.vue";
 import OrderView from "@/views/OrderView.vue";
 import UserView from "@/views/UserView.vue";
 import AdminView from "@/views/AdminView.vue";
+import BrandView from "@/views/BrandView.vue";
 const routes: Array<RouteRecordRaw> = [
   {
     path: "/",
@@ -41,6 +42,11 @@ const routes: Array<RouteRecordRaw> = [
         path: "categories",
         name: "categories",
         component: CategoriesView,
+      },
+      {
+        path: "Brands",
+        name: "brands",
+        component: BrandView,
       },
       {
         path: "orders",

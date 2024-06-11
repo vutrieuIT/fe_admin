@@ -41,9 +41,9 @@ export default defineComponent({
         to: "/admin/products",
       },
       { label: "Categories", icon: "pi pi-tags", to: "/admin/categories" },
+      { label: "Brands", icon: "pi pi-tags", to: "/admin/brands" },
       { label: "Orders", icon: "pi pi-shopping-cart", to: "/admin/orders" },
       { label: "Users", icon: "pi pi-user", to: "/admin/users" },
-      // {label: ""}
     ]);
 
     const toggleMenu = () => {
