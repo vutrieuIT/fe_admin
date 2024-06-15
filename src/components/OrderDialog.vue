@@ -8,6 +8,7 @@
     <div class="flex align-items-center gap-3 mb-3">
       <label for="id" class="font-semibold w-6rem">id</label>
       <InputText
+        disabled
         v-model="dataModel.order_number"
         id="id"
         class="flex-auto"
@@ -17,6 +18,7 @@
     <div class="flex align-items-center gap-3 mb-3">
       <label for="user" class="font-semibold w-6rem">user</label>
       <InputText
+        disabled
         v-model="dataModel.full_name"
         id="user"
         class="flex-auto"
@@ -36,14 +38,16 @@
     </div>
     <template #footer>
       <Button
+        type="button"
+        severity="secondary"
         label="Cancel"
         @click="$emit('update:visible', false)"
-        class="p-button-secondary"
       ></Button>
       <Button
+        type="button"
+        severity="secondary"
         label="Save"
         @click="$emit('save', dataModel)"
-        class="mr-2"
       ></Button>
     </template>
   </Dialog>

@@ -15,8 +15,11 @@
     <Column field="role" header="Role"></Column>
     <Column header="Actions">
       <template #body="slotProps">
-        <button @click="editUser(slotProps.data)">Edit</button>
-        <button class="ml-2" @click="deleteUser(slotProps.data)">Delete</button>
+        <Button
+          :disabled="slotProps.data.role === 'admin'"
+          @click="editUser(slotProps.data)"
+          >Edit</Button
+        >
       </template>
     </Column>
   </DataTable>

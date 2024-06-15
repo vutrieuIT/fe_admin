@@ -10,7 +10,11 @@ import ToastService from "primevue/toastservice";
 import ApiUtils from "./util/apiUtil";
 import mitt from "mitt";
 
-ApiUtils.init("http://localhost:8001");
+ApiUtils.init(
+  process.env.VUE_APP_SERVER_URL
+    ? process.env.VUE_APP_SERVER_URL
+    : "http://localhost:8001"
+);
 const eventBus = mitt();
 
 const app = createApp(App);

@@ -1,10 +1,10 @@
 <template>
   <div class="flex justify-content-center">
     <div
-      class="login-container flex flex-column align-items-center mt-2 p-4 bg-blue-300"
+      class="login-container flex flex-column align-items-center px-4 pb-4 bg-blue-300"
     >
-      <p class="text-2xl text-blue-500 m-0">Đăng nhập Admin</p>
-      <p>lazy store</p>
+      <p class="text-4xl mb-0">ADMIN</p>
+      <p class="text-4xl mt-0">LAZY STORE</p>
       <div class="login-form">
         <div class="flex flex-column gap-2">
           <label class="align-self-start" for="username">Tài khoản</label>
@@ -36,10 +36,6 @@
             {{ errorMessageDto.password }}
           </small>
         </div>
-        <div class="remember-box mt-5 flex align-content-start">
-          <Checkbox v-model="loginData.remember" :binary="true" />
-          <label class="ml-2" for="">Ghi nhớ đăng nhập</label>
-        </div>
       </div>
       <Button class="mt-6" label="Đăng nhập" @click="postLogin"></Button>
     </div>
@@ -49,7 +45,6 @@
 <script lang="ts">
 import Button from "primevue/button";
 import InputText from "primevue/inputtext";
-import Checkbox from "primevue/checkbox";
 import ApiUtils from "@/util/apiUtil";
 import { useRouter } from "vue-router";
 import { useToast } from "primevue/usetoast";
@@ -71,7 +66,6 @@ export default defineComponent({
   components: {
     Button,
     InputText,
-    Checkbox,
   },
   setup() {
     const toast = useToast();
