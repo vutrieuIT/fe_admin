@@ -80,7 +80,7 @@ export default defineComponent({
           toast.add({
             severity: "success",
             summary: "Success",
-            detail: "Created successfully",
+            detail: "Tạo thương hiệu thành công",
             life: 3000,
           });
           isShowDialog.value = false;
@@ -90,7 +90,7 @@ export default defineComponent({
           toast.add({
             severity: "error",
             summary: "Error",
-            detail: "Create failed",
+            detail: "Tạo thương hiệu thất bại",
             life: 3000,
           });
         });
@@ -102,7 +102,7 @@ export default defineComponent({
           toast.add({
             severity: "success",
             summary: "Success",
-            detail: "Updated successfully",
+            detail: "Cập nhật thương hiệu thành công",
             life: 3000,
           });
           isShowDialog.value = false;
@@ -112,7 +112,7 @@ export default defineComponent({
           toast.add({
             severity: "error",
             summary: "Error",
-            detail: "Update failed",
+            detail: "Cập nhật thương hiệu thất bại",
             life: 3000,
           });
         });
@@ -124,7 +124,7 @@ export default defineComponent({
           toast.add({
             severity: "success",
             summary: "Success",
-            detail: "Deleted successfully",
+            detail: "Xóa thương hiệu thành công",
             life: 3000,
           });
           getBrands();
@@ -133,7 +133,7 @@ export default defineComponent({
           toast.add({
             severity: "error",
             summary: "Error",
-            detail: "Delete failed",
+            detail: "Xóa thương hiệu thất bại",
             life: 3000,
           });
         })
