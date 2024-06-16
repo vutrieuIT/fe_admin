@@ -107,7 +107,7 @@ export default defineComponent({
           toast.add({
             severity: "success",
             summary: "Success",
-            detail: "Data saved",
+            detail: "lưu danh mục thành công",
             life: 3000,
           });
           callApiInit();
@@ -116,7 +116,7 @@ export default defineComponent({
           toast.add({
             severity: "error",
             summary: "Error",
-            detail: "Data saved",
+            detail: "lưu danh mục thất bại",
             life: 3000,
           });
           console.log(error);
@@ -129,7 +129,7 @@ export default defineComponent({
           toast.add({
             severity: "success",
             summary: "Success",
-            detail: "Data updated",
+            detail: "cập nhật danh mục thành công",
             life: 3000,
           });
           callApiInit();
@@ -138,7 +138,7 @@ export default defineComponent({
           toast.add({
             severity: "error",
             summary: "Error",
-            detail: "Data updated",
+            detail: "cập nhật danh mục thất bại",
             life: 3000,
           });
           console.log(error);
@@ -166,7 +166,7 @@ export default defineComponent({
           toast.add({
             severity: "success",
             summary: "Success",
-            detail: "Data deleted",
+            detail: "xóa danh mục thành công",
             life: 3000,
           });
           callApiInit();
@@ -175,7 +175,7 @@ export default defineComponent({
           toast.add({
             severity: "error",
             summary: "Error",
-            detail: "Data deleted",
+            detail: "xóa danh mục thất bại",
             life: 3000,
           });
           console.log(error);
