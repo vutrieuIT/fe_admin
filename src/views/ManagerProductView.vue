@@ -309,7 +309,6 @@ export default defineComponent({
 
     const editVariation = (data: Variations) => {
       selectedVariation.value = { ...data };
-      console.log(selectedVariation.value);
       dialogVisible.value = true;
     };
 
@@ -318,43 +317,30 @@ export default defineComponent({
     };
 
     const getApiBrand = async () => {
-      await ApiUtils.get("/api/thuong-hieu")
-        .then((res) => {
-          res.data.forEach((element: { name: string; id: number }) => {
-            brandOptions.value.push({ name: element.name, value: element.id });
-          });
-        })
-        .catch((err) => {
-          console.log(err);
+      await ApiUtils.get("/api/thuong-hieu").then((res) => {
+        res.data.forEach((element: { name: string; id: number }) => {
+          brandOptions.value.push({ name: element.name, value: element.id });
         });
+      });
     };
 
     const getApiCategory = async () => {
-      await ApiUtils.get("/api/danh-muc-san-pham")
-        .then((res) => {
-          res.data.forEach((element: { name: string; id: number }) => {
-            categoryOptions.value.push({
-              name: element.name,
-              value: element.id,
-            });
+      await ApiUtils.get("/api/danh-muc-san-pham").then((res) => {
+        res.data.forEach((element: { name: string; id: number }) => {
+          categoryOptions.value.push({
+            name: element.name,
+            value: element.id,
           });
-        })
-        .catch((err) => {
-          console.log(err);
         });
+      });
     };
 
     const getApiProduct = async () => {
       if (route.params.id) {
-        await ApiUtils.get(`/api/san-pham/${route.params.id}`)
-          .then((res) => {
-            Object.assign(dataModel, res.data);
-            Object.assign(variantions.value, res.data.variations);
-            console.log(variantions.value);
-          })
-          .catch((err) => {
-            console.log(err);
-          });
+        await ApiUtils.get(`/api/san-pham/${route.params.id}`).then((res) => {
+          Object.assign(dataModel, res.data);
+          Object.assign(variantions.value, res.data.variations);
+        });
       }
     };
 

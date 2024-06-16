@@ -96,10 +96,8 @@ export default defineComponent({
 
     const save = () => {
       if (!validate()) {
-        console.log("validate failed");
         return;
       }
-      console.log("validate success", dataModel.value);
       visibleModel.value = false;
       context.emit("save", dataModel.value);
     };
@@ -127,7 +125,6 @@ export default defineComponent({
       validateModel.value = errors;
 
       if (errors.name || errors.slug) {
-        console.log("validate", errors);
         return false;
       } else {
         return true;

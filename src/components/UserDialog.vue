@@ -66,11 +66,9 @@ export default defineComponent({
     const save = () => {
       visibleModel.value = false;
       context.emit("save", dataModel.value);
-      console.log("Save", dataModel.value);
     };
     const cancel = () => {
       context.emit("update:visible", false);
-      console.log("Cancel");
     };
     const dataModel = computed(() => props.data as User);
 

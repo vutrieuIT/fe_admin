@@ -112,8 +112,6 @@ export default defineComponent({
   },
   emits: ["update:visible", "save"],
   setup(props, context) {
-    console.log(props.data);
-
     const categoryOptions = ref([] as { name: string; value: number }[]);
 
     const brandOptions = ref([] as { name: string; value: number }[]);
@@ -131,30 +129,22 @@ export default defineComponent({
     };
 
     const getApiBrand = async () => {
-      await ApiUtils.get("/api/thuong-hieu")
-        .then((res) => {
-          res.data.forEach((element: { name: string; id: number }) => {
-            brandOptions.value.push({ name: element.name, value: element.id });
-          });
-        })
-        .catch((err) => {
-          console.log(err);
+      await ApiUtils.get("/api/thuong-hieu").then((res) => {
+        res.data.forEach((element: { name: string; id: number }) => {
+          brandOptions.value.push({ name: element.name, value: element.id });
         });
+      });
     };
 
     const getApiCategory = async () => {
-      await ApiUtils.get("/api/danh-muc-san-pham")
-        .then((res) => {
-          res.data.forEach((element: { name: string; id: number }) => {
-            categoryOptions.value.push({
-              name: element.name,
-              value: element.id,
-            });
+      await ApiUtils.get("/api/danh-muc-san-pham").then((res) => {
+        res.data.forEach((element: { name: string; id: number }) => {
+          categoryOptions.value.push({
+            name: element.name,
+            value: element.id,
           });
-        })
-        .catch((err) => {
-          console.log(err);
         });
+      });
     };
 
     // init data

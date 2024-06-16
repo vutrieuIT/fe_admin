@@ -83,7 +83,6 @@ export default defineComponent({
     });
 
     const validateForm = () => {
-      console.log(loginData.value);
       if (loginData.value.email === null || loginData.value.email === "") {
         errorMessageDto.value.email = "vui lòng nhập email";
       } else {
@@ -114,7 +113,6 @@ export default defineComponent({
       await ApiUtils.post("/api/login", loginData.value)
         .then((response) => {
           sessionStorage.setItem("token", response.data.token);
-          console.log("login:", response.data);
 
           router.push("/admin/dashboard");
         })
@@ -126,7 +124,6 @@ export default defineComponent({
             detail: msg ? msg : "Đăng nhập thất bại",
             life: 3000,
           });
-          console.log("login:", err);
         });
     };
 

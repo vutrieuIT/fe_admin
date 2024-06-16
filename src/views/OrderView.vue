@@ -44,11 +44,9 @@ export default defineComponent({
     const editOrder = (data: unknown) => {
       selectedOrder.value = { ...(data as OrderDto) };
       visible.value = true;
-      console.log(data);
     };
 
     const save = (data: OrderDto) => {
-      console.log(data);
       visible.value = false;
       ApiUtils.put("/api/order", data)
         .then(() => {
@@ -72,14 +70,9 @@ export default defineComponent({
 
     //
     const callApiInit = async () => {
-      await ApiUtils.get("/api/order")
-        .then((response) => {
-          data.value = response.data.orders;
-          console.log(response.data.orders);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      await ApiUtils.get("/api/order").then((response) => {
+        data.value = response.data.orders;
+      });
     };
 
     callApiInit();

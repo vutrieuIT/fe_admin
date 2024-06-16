@@ -77,7 +77,6 @@ export default defineComponent({
     const editCategory = (category: unknown) => {
       visible.value = true;
       selectedCategory.value = { ...(category as CategoryDto) };
-      console.log(category);
     };
 
     const deleteCategory = async (category: unknown) => {
@@ -88,11 +87,9 @@ export default defineComponent({
     const createCategory = () => {
       selectedCategory.value = {} as CategoryDto;
       visible.value = true;
-      console.log("Create Category");
     };
 
     const save = async (category: CategoryDto) => {
-      console.log("save");
       visible.value = false;
       if (category.id) {
         await callApiUpdate(category);
@@ -112,14 +109,13 @@ export default defineComponent({
           });
           callApiInit();
         })
-        .catch((error) => {
+        .catch(() => {
           toast.add({
             severity: "error",
             summary: "Error",
             detail: "lưu danh mục thất bại",
             life: 3000,
           });
-          console.log(error);
         });
     };
 
@@ -134,25 +130,20 @@ export default defineComponent({
           });
           callApiInit();
         })
-        .catch((error) => {
+        .catch(() => {
           toast.add({
             severity: "error",
             summary: "Error",
             detail: "cập nhật danh mục thất bại",
             life: 3000,
           });
-          console.log(error);
         });
     };
 
     const callApiInit = async () => {
-      await ApiUtils.get("/api/danh-muc-san-pham")
-        .then((response) => {
-          data.value = response.data;
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      await ApiUtils.get("/api/danh-muc-san-pham").then((response) => {
+        data.value = response.data;
+      });
     };
 
     callApiInit();
@@ -171,14 +162,13 @@ export default defineComponent({
           });
           callApiInit();
         })
-        .catch((error) => {
+        .catch(() => {
           toast.add({
             severity: "error",
             summary: "Error",
             detail: "xóa danh mục thất bại",
             life: 3000,
           });
-          console.log(error);
         });
     };
 

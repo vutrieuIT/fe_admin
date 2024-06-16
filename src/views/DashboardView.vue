@@ -57,13 +57,9 @@ export default defineComponent({
         `/api/sumary/sales?startDate=${fromDate.value
           .toISOString()
           .slice(0, 10)}&endDate=${toDate.value.toISOString().slice(0, 10)}`
-      )
-        .then((res) => {
-          data.value = res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      ).then((res) => {
+        data.value = res.data;
+      });
     };
 
     const callApiRevenue = async () => {
@@ -72,14 +68,9 @@ export default defineComponent({
         `/api/sumary/revenue?startDate=${fromDate.value
           .toISOString()
           .slice(0, 10)}&endDate=${toDate.value.toISOString().slice(0, 10)}`
-      )
-        .then((res) => {
-          dataRevenue.value = res.data;
-          console.log(dataRevenue.value);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      ).then((res) => {
+        dataRevenue.value = res.data;
+      });
     };
 
     const callSumary = () => {

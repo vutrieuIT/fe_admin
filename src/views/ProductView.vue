@@ -76,6 +76,7 @@ export default defineComponent({
     Dialog,
   },
   setup() {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const eventBus = inject("eventBus") as any;
     const toast = useToast();
     const router = useRouter();
@@ -98,20 +99,15 @@ export default defineComponent({
     };
 
     const editProduct = (data: ProductDto) => {
-      // selectedProduct.value = { ...(data as ProductDto) };
-      // visible.value = true;
-      // console.log(data);
       router.push(`/admin/products/mng/${data.id}`);
     };
 
     const deleteProduct = (data: unknown) => {
       selectedProduct.value = { ...(data as ProductDto) };
       visibleConfirm.value = true;
-      console.log(data);
     };
 
     const save = (data: ProductDto) => {
-      console.log(data);
       visible.value = false;
       ApiUtils.post("/api/san-pham", data)
         .then(() => {
@@ -137,7 +133,7 @@ export default defineComponent({
       ApiUtils.delete(
         `/api/san-pham/variant/${selectedProduct.value.variant_id}`
       )
-        .then((res) => {
+        .then(() => {
           toast.add({
             severity: "success",
             summary: "Success",
@@ -145,7 +141,6 @@ export default defineComponent({
             life: 3000,
           });
           callApiInit();
-          console.log(res.data);
         })
         .catch(() => {
           toast.add({
@@ -154,18 +149,13 @@ export default defineComponent({
             detail: "xóa phiên bản sản phẩm thất bại",
             life: 3000,
           });
-          console.log("call api error: Delete product");
         });
     };
 
     const callApiInit = async () => {
-      ApiUtils.get("/api/san-pham")
-        .then((res) => {
-          dataApi.value = res.data;
-        })
-        .catch(() => {
-          console.log("call api error: Init product");
-        });
+      ApiUtils.get("/api/san-pham").then((res) => {
+        dataApi.value = res.data;
+      });
     };
 
     // call when component created

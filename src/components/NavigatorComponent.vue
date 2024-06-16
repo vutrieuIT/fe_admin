@@ -46,9 +46,8 @@ export default defineComponent({
       { label: "Users", icon: "pi pi-user", to: "/admin/users" },
     ]);
 
-    const toggleMenu = () => {
-      console.log("toggle menu");
-    };
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    const toggleMenu = () => {};
 
     const clickItem = (index: number) => {
       tabActived.value = index;

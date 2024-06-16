@@ -75,14 +75,9 @@ export default defineComponent({
     ]);
 
     const callInitApi = async () => {
-      await ApiUtils.get("/api/all-user")
-        .then((res) => {
-          users.value = res.data;
-          console.log(users.value);
-        })
-        .catch(() => {
-          console.log("call api error: Init user");
-        });
+      await ApiUtils.get("/api/all-user").then((res) => {
+        users.value = res.data;
+      });
     };
 
     const visible = ref(false);
@@ -101,36 +96,31 @@ export default defineComponent({
     const editUser = (user: unknown) => {
       selectedUser.value = user as User;
       visible.value = true;
-      console.log("Edit user", user);
     };
 
     const deleteUser = (user: unknown) => {
       selectedUser.value = user as User;
       visibleConfirm.value = true;
-      console.log("Delete user", user);
     };
 
     const save = async (user: unknown) => {
       visible.value = false;
-      console.log("Save user", user);
       await ApiUtils.post("/api/user/status", user as User)
-        .then((res) => {
+        .then(() => {
           toast.add({
             severity: "success",
             summary: "Successful",
             detail: "cập nhật trạng thái user thành công",
             life: 3000,
           });
-          console.log(res.data);
         })
-        .catch((err) => {
+        .catch(() => {
           toast.add({
             severity: "error",
             summary: "Error",
             detail: "cập nhật trạng thái user thất bại",
             life: 3000,
           });
-          console.log("call api error: Save user", err.response?.data);
         });
     };
 

@@ -76,7 +76,7 @@ export default defineComponent({
 
     const callApiCreate = async (data: BrandDto) => {
       await ApiUtils.post("/api/thuong-hieu", data)
-        .then((res) => {
+        .then(() => {
           toast.add({
             severity: "success",
             summary: "Success",
@@ -86,7 +86,7 @@ export default defineComponent({
           isShowDialog.value = false;
           getBrands();
         })
-        .catch((err) => {
+        .catch(() => {
           toast.add({
             severity: "error",
             summary: "Error",
@@ -98,7 +98,7 @@ export default defineComponent({
 
     const callApiEdit = async (data: BrandDto) => {
       await ApiUtils.put(`/api/thuong-hieu/${data.id}`, data)
-        .then((res) => {
+        .then(() => {
           toast.add({
             severity: "success",
             summary: "Success",
@@ -108,7 +108,7 @@ export default defineComponent({
           isShowDialog.value = false;
           getBrands();
         })
-        .catch((err) => {
+        .catch(() => {
           toast.add({
             severity: "error",
             summary: "Error",
@@ -120,7 +120,7 @@ export default defineComponent({
 
     const callApiDetete = async () => {
       await ApiUtils.delete(`/api/thuong-hieu/${selectedBrand.value.id}`)
-        .then((res) => {
+        .then(() => {
           toast.add({
             severity: "success",
             summary: "Success",
@@ -129,7 +129,7 @@ export default defineComponent({
           });
           getBrands();
         })
-        .catch((err) => {
+        .catch(() => {
           toast.add({
             severity: "error",
             summary: "Error",
@@ -143,8 +143,6 @@ export default defineComponent({
     };
 
     const save = async (data: BrandDto) => {
-      console.log("save", data);
-
       if (data.id) {
         await callApiEdit(data);
       } else {
@@ -155,17 +153,12 @@ export default defineComponent({
     const showDialog = () => {
       selectedBrand.value = {} as BrandDto;
       isShowDialog.value = true;
-      console.log("show dialog", isShowDialog.value);
     };
 
     const getBrands = async () => {
-      ApiUtils.get("/api/thuong-hieu")
-        .then((res) => {
-          data.value = res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      ApiUtils.get("/api/thuong-hieu").then((res) => {
+        data.value = res.data;
+      });
     };
 
     //
