@@ -118,7 +118,7 @@ export default defineComponent({
           toast.add({
             severity: "success",
             summary: "Success",
-            detail: "Product saved",
+            detail: "Lưu sản phẩm thành công",
             life: 3000,
           });
         })
@@ -126,7 +126,7 @@ export default defineComponent({
           toast.add({
             severity: "error",
             summary: "Error",
-            detail: "Product save failed",
+            detail: "lưu sản phẩm thất bại",
             life: 3000,
           });
         });
@@ -141,7 +141,7 @@ export default defineComponent({
           toast.add({
             severity: "success",
             summary: "Success",
-            detail: "Product deleted",
+            detail: "xóa phiên bản sản phẩm thành công",
             life: 3000,
           });
           callApiInit();
@@ -151,7 +151,7 @@ export default defineComponent({
           toast.add({
             severity: "error",
             summary: "Error",
-            detail: "Product delete failed",
+            detail: "xóa phiên bản sản phẩm thất bại",
             life: 3000,
           });
           console.log("call api error: Delete product");

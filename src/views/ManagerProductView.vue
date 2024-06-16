@@ -225,7 +225,7 @@ export default defineComponent({
             toast.add({
               severity: "success",
               summary: "Success",
-              detail: "Update product success",
+              detail: "cập nhật sản phẩm thành công",
               life: 3000,
             });
           })
@@ -233,7 +233,7 @@ export default defineComponent({
             toast.add({
               severity: "error",
               summary: "Error",
-              detail: "Update product fail",
+              detail: "cập nhật sản phẩm thất bại",
               life: 3000,
             });
             success = false;
@@ -244,7 +244,7 @@ export default defineComponent({
             toast.add({
               severity: "success",
               summary: "Success",
-              detail: "Create product success",
+              detail: "Tạo sản phẩm thành công",
               life: 3000,
             });
           })
@@ -252,7 +252,7 @@ export default defineComponent({
             toast.add({
               severity: "error",
               summary: "Error",
-              detail: "Create product fail",
+              detail: "Tạo sản phẩm thất bại",
               life: 3000,
             });
             success = false;
@@ -365,7 +365,7 @@ export default defineComponent({
           toast.add({
             severity: "success",
             summary: "Success",
-            detail: "Delete product success",
+            detail: "Xóa sản phẩm thành công",
             life: 3000,
           });
           router.push("/admin/products");
@@ -374,7 +374,7 @@ export default defineComponent({
           toast.add({
             severity: "error",
             summary: "Error",
-            detail: "Delete product fail",
+            detail: "Xóa sản phẩm thất bại",
             life: 3000,
           });
         });
