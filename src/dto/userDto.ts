@@ -3,6 +3,7 @@ interface User {
   name: string;
   avatar: string;
   role: string;
+  status: string;
 }
 
 export default User;

@@ -12,10 +12,21 @@
       </template>
     </Column>
     <Column field="email" header="Email"></Column>
-    <Column field="role" header="Role"></Column>
+    <Column field="role" header="Role">
+      <template #body="slotProps">
+        <span>
+          {{ slotProps.data.role === 1 ? "Admin" : "User" }}
+        </span>
+      </template>
+    </Column>
+    <Column field="status" header="Status"></Column>
     <Column header="Actions">
       <template #body="slotProps">
-        <Button @click="editUser(slotProps.data)">Edit</Button>
+        <Button
+          :disabled="slotProps.data.role"
+          @click="editUser(slotProps.data)"
+          >Edit</Button
+        >
       </template>
     </Column>
   </DataTable>
@@ -24,19 +35,6 @@
     :data="selectedUser"
     @save="save"
   ></UserDialog>
-
-  <Dialog v-model:visible="visibleConfirm" header="confirm delete">
-    <p>Are you sure you want to delete this user? {{ selectedUser.name }}</p>
-    <div class="flex justify-content-end gap-2">
-      <Button
-        type="button"
-        label="Cancel"
-        severity="secondary"
-        @click="visibleConfirm = false"
-      ></Button>
-      <Button type="button" label="Delete" @click="callApiDetete"></Button>
-    </div>
-  </Dialog>
 </template>
 
 <script lang="ts">
@@ -46,7 +44,6 @@ import Column from "primevue/column";
 import UserDialog from "@/components/UserDialog.vue";
 import User from "@/dto/userDto";
 import ApiUtils from "@/util/apiUtil";
-import Dialog from "primevue/dialog";
 import Button from "primevue/button";
 import { useToast } from "primevue/usetoast";
 
@@ -55,7 +52,6 @@ export default defineComponent({
     DataTable,
     Column,
     UserDialog,
-    Dialog,
     Button,
   },
   setup() {
@@ -67,17 +63,19 @@ export default defineComponent({
         name: "Alice",
         email: "Alice@gmail.com",
         role: "admin",
+        status: "active",
       },
       {
         id: 2,
         name: "Bob",
         email: "Bob@gmail.com",
         role: "user",
+        status: "active",
       },
     ]);
 
     const callInitApi = async () => {
-      await ApiUtils.get("/admin/user")
+      await ApiUtils.get("/api/all-user")
         .then((res) => {
           users.value = res.data;
           console.log(users.value);
@@ -97,6 +95,7 @@ export default defineComponent({
       avatar: "",
       email: "",
       role: "",
+      status: "",
     } as User);
 
     const editUser = (user: unknown) => {
@@ -111,38 +110,15 @@ export default defineComponent({
       console.log("Delete user", user);
     };
 
-    const callApiDetete = async () => {
-      visibleConfirm.value = false;
-      await ApiUtils.delete(`/admin/user/${selectedUser.value.id}`)
-        .then((res) => {
-          toast.add({
-            severity: "success",
-            summary: "Successful",
-            detail: "User deleted",
-            life: 3000,
-          });
-          console.log(res.data);
-        })
-        .catch(() => {
-          toast.add({
-            severity: "error",
-            summary: "Error",
-            detail: "Delete user failed",
-            life: 3000,
-          });
-          console.log("call api error: Delete user");
-        });
-    };
-
     const save = async (user: unknown) => {
       visible.value = false;
       console.log("Save user", user);
-      await ApiUtils.post("admin/user", user as User)
+      await ApiUtils.post("/api/user/status", user as User)
         .then((res) => {
           toast.add({
             severity: "success",
             summary: "Successful",
-            detail: "User saved",
+            detail: "cập nhật trạng thái user thành công",
             life: 3000,
           });
           console.log(res.data);
@@ -151,7 +127,7 @@ export default defineComponent({
           toast.add({
             severity: "error",
             summary: "Error",
-            detail: "Save user failed",
+            detail: "cập nhật trạng thái user thất bại",
             life: 3000,
           });
           console.log("call api error: Save user", err.response?.data);
@@ -168,7 +144,6 @@ export default defineComponent({
       editUser,
       deleteUser,
       save,
-      callApiDetete,
     };
   },
 });

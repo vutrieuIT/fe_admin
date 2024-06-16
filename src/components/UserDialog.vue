@@ -16,12 +16,12 @@
       />
     </div>
     <div class="flex align-items-center gap-3 mb-5">
-      <label for="role" class="font-semibold w-6rem">role</label>
+      <label for="status" class="font-semibold w-6rem">status</label>
       <Dropdown
-        v-model="dataModel.role"
-        id="role"
+        v-model="dataModel.status"
+        id="status"
         class="flex-auto"
-        :options="roleOptions"
+        :options="statusOptions"
         optionLabel="name"
         optionValue="value"
       />
@@ -74,11 +74,11 @@ export default defineComponent({
     };
     const dataModel = computed(() => props.data as User);
 
-    const roleOptions = [
-      { name: "Admin", value: "admin" },
-      { name: "User", value: "user" },
+    const statusOptions = [
+      { name: "Active", value: "active" },
+      { name: "Inactive", value: "inactive" },
     ];
-    return { visibleModel, dataModel, roleOptions, save, cancel };
+    return { visibleModel, dataModel, statusOptions, save, cancel };
   },
 });
 </script>
