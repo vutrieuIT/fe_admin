@@ -52,6 +52,17 @@
         autocomplete="off"
       />
     </div>
+    <div class="flex align-items-center gap-3 mb-3">
+      <label for="image_file" class="font-semibold w-6rem"> imageFile </label>
+      <FileUpload
+        ref="file"
+        mode="basic"
+        id="image_file"
+        class="flex-auto"
+        autocomplete="off"
+        @select="file = $event.files[0]"
+      ></FileUpload>
+    </div>
     <template #footer>
       <div class="flex justify-end gap-3">
         <Button label="Cancel" @click="visibleModel = false"> Cancel </Button>
@@ -62,20 +73,25 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from "vue";
+import { defineComponent, computed, ref } from "vue";
 import Dialog from "primevue/dialog";
 import InputText from "primevue/inputtext";
 import { Variations } from "@/dto/productAdminDto";
 import InputNumber from "primevue/inputnumber";
 import colorList from "@/dto/color";
 import Dropdown from "primevue/dropdown";
+import FileUpload from "primevue/fileupload";
+import ApiUtils from "@/util/apiUtil";
+import axios from "axios";
 
 export default defineComponent({
+  name: "ProductVariationDialog",
   components: {
     Dialog,
     InputText,
     InputNumber,
     Dropdown,
+    FileUpload,
   },
   props: {
     visible: Boolean,
@@ -95,6 +111,7 @@ export default defineComponent({
   },
   emits: ["update:visible", "save"],
   setup(props, ctx) {
+    const file = ref<File | undefined>();
     const visibleModel = computed({
       get: () => props.visible,
       set: (value) => {
@@ -103,11 +120,30 @@ export default defineComponent({
     });
     const dataModel = computed(() => props.data);
 
-    const save = () => {
+    const save = async () => {
       visibleModel.value = false;
+      if (file.value) {
+        const formData = new FormData();
+        formData.append("file", file.value);
+        const token = localStorage.getItem("token");
+        await axios
+          .post(`${process.env.VUE_APP_SERVER_URL}/api/file`, formData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+              Authorization: `Bearer ${token}`,
+            },
+          })
+          .then((res) => {
+            dataModel.value.image_url = res.data;
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }
       ctx.emit("save", dataModel.value);
     };
     return {
+      file,
       colorList,
       visibleModel,
       dataModel,

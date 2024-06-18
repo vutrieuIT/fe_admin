@@ -10,6 +10,7 @@ interface Variations {
   price_sale: number;
   amount: number;
   quantity: number;
+  image: File;
 }
 
 interface ProductAdminDto {
