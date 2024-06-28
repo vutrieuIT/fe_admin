@@ -81,7 +81,6 @@ import InputNumber from "primevue/inputnumber";
 import colorList from "@/dto/color";
 import Dropdown from "primevue/dropdown";
 import FileUpload from "primevue/fileupload";
-import ApiUtils from "@/util/apiUtil";
 import axios from "axios";
 
 export default defineComponent({
