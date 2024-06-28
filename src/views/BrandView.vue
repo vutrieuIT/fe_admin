@@ -3,7 +3,15 @@
   <div class="flex justify-content-end pr-2">
     <Button @click="showDialog">Add</Button>
   </div>
-  <DataTable :value="data" header="Order">
+  <DataTable
+    :value="data"
+    v-model:rows="rows"
+    v-model:first="first"
+    :paginator="true"
+    paginatorPosition="top"
+    :rowsPerPageOptions="[5, 10, 20]"
+    header="Order"
+  >
     <Column field="name" header="Name"></Column>
     <Column field="slug" header="Slug"></Column>
     <Column field="country" header="Country"></Column>
@@ -58,8 +66,9 @@ export default defineComponent({
   },
   setup() {
     const data = ref([] as BrandDto[]);
+    const rows = ref(5);
+    const first = ref(0);
     const toast = useToast();
-
     const isShowDialog = ref(false);
     const visibleConfirm = ref(false);
     const selectedBrand = ref({} as BrandDto);
@@ -168,6 +177,8 @@ export default defineComponent({
 
     return {
       data,
+      rows,
+      first,
       isShowDialog,
       selectedBrand,
       visibleConfirm,

@@ -3,7 +3,14 @@
   <div class="flex justify-content-end pr-2">
     <Button @click="createCategory">Create</Button>
   </div>
-  <DataTable :value="data">
+  <DataTable
+    :value="data"
+    v-model:rows="rows"
+    v-model:first="first"
+    :paginator="true"
+    paginatorPosition="top"
+    :rowsPerPageOptions="[5, 10, 20]"
+  >
     <Column field="name" header="Name"></Column>
     <Column field="slug" header="Slug"></Column>
     <Column field="position" header="Position"></Column>
@@ -66,13 +73,12 @@ export default defineComponent({
   },
   setup() {
     const toast = useToast();
-
     const data = ref([]);
-
     const selectedCategory = ref({} as CategoryDto);
-
     const visible = ref(false);
     const visibleConfirm = ref(false);
+    const rows = ref(5);
+    const first = ref(0);
 
     const editCategory = (category: unknown) => {
       visible.value = true;
@@ -174,6 +180,8 @@ export default defineComponent({
 
     return {
       data,
+      rows,
+      first,
       selectedCategory,
       visible,
       visibleConfirm,

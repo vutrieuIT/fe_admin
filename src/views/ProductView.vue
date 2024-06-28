@@ -3,7 +3,16 @@
   <div class="flex justify-content-end pr-2">
     <Button @click="createProduct">Add Product</Button>
   </div>
-  <DataTable :value="data" rowGroupMode="rowspan" groupRowsBy="name">
+  <DataTable
+    :value="data"
+    v-model:rows="rows"
+    v-model:first="first"
+    :paginator="true"
+    paginatorPosition="top"
+    :rowsPerPageOptions="[5, 10, 20]"
+    rowGroupMode="rowspan"
+    groupRowsBy="name"
+  >
     <Column header="#" headerStyle="width:3rem">
       <template #body="slotProps">
         {{ slotProps.index + 1 }}
@@ -80,12 +89,11 @@ export default defineComponent({
     const eventBus = inject("eventBus") as any;
     const toast = useToast();
     const router = useRouter();
-
     const dataApi = ref([]);
-
     const data = ref([] as ProductDto[]);
-
     const selectedProduct = ref({} as ProductDto);
+    const rows = ref(5);
+    const first = ref(0);
 
     watch(dataApi, (newVal) => {
       data.value = convertToProductDtos(newVal);
@@ -168,6 +176,8 @@ export default defineComponent({
 
     return {
       data,
+      rows,
+      first,
       visible,
       visibleConfirm,
       selectedProduct,

@@ -1,6 +1,14 @@
 <template>
   <div class="text-2xl">User</div>
-  <DataTable :value="users">
+
+  <DataTable
+    :value="users"
+    v-model:rows="rows"
+    v-model:first="first"
+    :paginator="true"
+    paginatorPosition="top"
+    :rowsPerPageOptions="[5, 10, 20]"
+  >
     <Column field="name" header="Name"></Column>
     <Column header="avatar">
       <template #body="slotProps">
@@ -56,23 +64,9 @@ export default defineComponent({
   },
   setup() {
     const toast = useToast();
-
-    const users = ref([
-      {
-        id: 1,
-        name: "Alice",
-        email: "Alice@gmail.com",
-        role: "admin",
-        status: "active",
-      },
-      {
-        id: 2,
-        name: "Bob",
-        email: "Bob@gmail.com",
-        role: "user",
-        status: "active",
-      },
-    ]);
+    const users = ref([] as User[]);
+    const rows = ref(5);
+    const first = ref(0);
 
     const callInitApi = async () => {
       await ApiUtils.get("/api/all-user").then((res) => {
@@ -127,6 +121,8 @@ export default defineComponent({
     callInitApi();
 
     return {
+      rows,
+      first,
       users,
       visible,
       visibleConfirm,

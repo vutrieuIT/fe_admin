@@ -1,6 +1,14 @@
 <template>
   <div class="text-2xl">Orders</div>
-  <DataTable :value="data" header="Order">
+  <DataTable
+    :value="data"
+    v-model:rows="rows"
+    v-model:first="first"
+    :paginator="true"
+    paginatorPosition="top"
+    :rowsPerPageOptions="[5, 10, 20]"
+    header="Order"
+  >
     <Column field="order_number" header="order id"></Column>
     <Column field="full_name" header="User"></Column>
     <Column field="total" header="Total"></Column>
@@ -35,11 +43,11 @@ export default defineComponent({
   },
   setup() {
     const toast = useToast();
-
     const data = ref([] as OrderDto[]);
-
     const visible = ref(false);
     const selectedOrder = ref({} as OrderDto);
+    const rows = ref(5);
+    const first = ref(0);
 
     const editOrder = (data: unknown) => {
       selectedOrder.value = { ...(data as OrderDto) };
@@ -79,6 +87,8 @@ export default defineComponent({
 
     return {
       data,
+      rows,
+      first,
       visible,
       selectedOrder,
       editOrder,
