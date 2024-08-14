@@ -110,7 +110,8 @@ export default defineComponent({
   },
   emits: ["update:visible", "save"],
   setup(props, ctx) {
-    const file = ref<File | undefined>();
+    const file = ref<File | undefined | null>(null);
+    console.log("file", file.value);
     const visibleModel = computed({
       get: () => props.visible,
       set: (value) => {
@@ -121,7 +122,7 @@ export default defineComponent({
 
     const save = async () => {
       visibleModel.value = false;
-      if (file.value) {
+      if (file.value?.size && file.value?.name) {
         const formData = new FormData();
         formData.append("file", file.value);
         const token = localStorage.getItem("token");
@@ -134,6 +135,7 @@ export default defineComponent({
           })
           .then((res) => {
             dataModel.value.image_url = res.data;
+            file.value = undefined;
           })
           .catch((err) => {
             console.log(err);
@@ -141,12 +143,14 @@ export default defineComponent({
       }
       ctx.emit("save", dataModel.value);
     };
+
     return {
       file,
       colorList,
       visibleModel,
       dataModel,
       save,
+      // handleFileSelect,
     };
   },
 });

@@ -17,6 +17,9 @@
     <Column header="Actions">
       <template #body="slotProps">
         <Button @click="editOrder(slotProps.data)">Edit</Button>
+        <Button class="ml-2" @click="getOrderDetail(slotProps.data)">
+          Detail
+        </Button>
       </template>
     </Column>
   </DataTable>
@@ -33,6 +36,7 @@ import Button from "primevue/button";
 import OrderDialog from "@/components/OrderDialog.vue";
 import { useToast } from "primevue/usetoast";
 import ApiUtils from "@/util/apiUtil";
+import router from "@/router";
 
 export default defineComponent({
   components: {
@@ -52,6 +56,10 @@ export default defineComponent({
     const editOrder = (data: unknown) => {
       selectedOrder.value = { ...(data as OrderDto) };
       visible.value = true;
+    };
+
+    const getOrderDetail = (data: OrderDto) => {
+      router.push(`/admin/orders/detail/${data.id}`);
     };
 
     const save = (data: OrderDto) => {
@@ -92,6 +100,7 @@ export default defineComponent({
       visible,
       selectedOrder,
       editOrder,
+      getOrderDetail,
       save,
     };
   },
