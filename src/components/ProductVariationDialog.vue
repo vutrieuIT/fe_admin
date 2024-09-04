@@ -70,11 +70,14 @@
       </div>
     </template>
   </Dialog>
+  <ConfirmDialog />
 </template>
 
 <script lang="ts">
 import { defineComponent, computed, ref } from "vue";
 import Dialog from "primevue/dialog";
+import ConfirmDialog from "primevue/confirmdialog";
+import { useConfirm } from "primevue/useconfirm";
 import InputText from "primevue/inputtext";
 import { Variations } from "@/dto/productAdminDto";
 import InputNumber from "primevue/inputnumber";
@@ -82,6 +85,7 @@ import colorList from "@/dto/color";
 import Dropdown from "primevue/dropdown";
 import FileUpload from "primevue/fileupload";
 import axios from "axios";
+import Button from "primevue/button";
 
 export default defineComponent({
   name: "ProductVariationDialog",
@@ -91,6 +95,8 @@ export default defineComponent({
     InputNumber,
     Dropdown,
     FileUpload,
+    ConfirmDialog,
+    Button,
   },
   props: {
     visible: Boolean,
@@ -111,7 +117,7 @@ export default defineComponent({
   emits: ["update:visible", "save"],
   setup(props, ctx) {
     const file = ref<File | undefined | null>(null);
-    console.log("file", file.value);
+    const confirm = useConfirm();
     const visibleModel = computed({
       get: () => props.visible,
       set: (value) => {
@@ -122,9 +128,78 @@ export default defineComponent({
 
     const save = async () => {
       visibleModel.value = false;
+      let isAcceptSave = true;
       if (file.value?.size && file.value?.name) {
         const formData = new FormData();
         formData.append("file", file.value);
+        const token = localStorage.getItem("token");
+
+        // verify image have phone
+        await axios
+          .post(`${process.env.VUE_APP_SERVER_PREDICT_URL}/predict`, formData, {
+            timeout: 10000,
+            headers: {
+              "Content-Type": "multipart/form-data",
+              "Access-Control-Allow-Origin": "*",
+              Authorization: `Bearer ${token}`,
+            },
+          })
+          .then(async (res) => {
+            isAcceptSave = await confirmImage(res.data.code);
+            console.log("isAcceptSave 1", isAcceptSave);
+
+            if (isAcceptSave) {
+              await uploadFile(formData); // Pass formData if necessary
+            }
+          })
+          .catch(async () => {
+            // code 2: error
+            isAcceptSave = await confirmImage(2);
+            console.log("isAcceptSave 2", isAcceptSave);
+
+            if (isAcceptSave) {
+              await uploadFile(formData); // Pass formData if necessary
+            }
+          });
+      }
+    };
+
+    const confirmImage = (code: number): Promise<boolean> => {
+      return new Promise((resolve) => {
+        let message = "";
+        switch (code) {
+          case 0:
+            message = "xác nhận";
+            break;
+          case 1:
+            message =
+              "ảnh gửi lên không có ảnh điện thoại, bạn có muốn tiêp tục không?";
+            break;
+          default:
+            message =
+              "xác thực ảnh không thành công, bạn có muốn tiêp tục không?";
+            break;
+        }
+
+        confirm.require({
+          message: message,
+          header: "Thông báo",
+          rejectLabel: "Hủy",
+          acceptLabel: "Đồng ý",
+          accept: () => {
+            resolve(true);
+          },
+          reject: () => {
+            resolve(false);
+          },
+        });
+      });
+    };
+
+    const uploadFile = async (formData: any) => {
+      try {
+        console.log("test file...");
+        // upload image to server
         const token = localStorage.getItem("token");
         await axios
           .post(`${process.env.VUE_APP_SERVER_URL}/api/file`, formData, {
@@ -138,10 +213,12 @@ export default defineComponent({
             file.value = undefined;
           })
           .catch((err) => {
-            console.log(err);
+            console.error(err);
           });
+        ctx.emit("save", dataModel.value);
+      } catch (error) {
+        console.log("Error when upload file", error);
       }
-      ctx.emit("save", dataModel.value);
     };
 
     return {

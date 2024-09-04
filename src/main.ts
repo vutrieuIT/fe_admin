@@ -7,6 +7,7 @@ import "/node_modules/primeflex/primeflex.min.css";
 import "primeicons/primeicons.css";
 import PrimeVue from "primevue/config";
 import ToastService from "primevue/toastservice";
+import ConfirmationService from "primevue/confirmationservice";
 import ApiUtils from "./util/apiUtil";
 import mitt from "mitt";
 
@@ -21,5 +22,6 @@ const app = createApp(App);
 app.use(router);
 app.use(PrimeVue);
 app.use(ToastService);
+app.use(ConfirmationService);
 app.provide("eventBus", eventBus);
 app.mount("#app");
