@@ -50,6 +50,7 @@
         id="image"
         class="flex-auto"
         autocomplete="off"
+        readonly
       />
     </div>
     <div class="flex align-items-center gap-3 mb-3">
@@ -136,17 +137,20 @@ export default defineComponent({
 
         // verify image have phone
         await axios
-          .post(`${process.env.VUE_APP_SERVER_PREDICT_URL}/predict`, formData, {
-            timeout: 10000,
-            headers: {
-              "Content-Type": "multipart/form-data",
-              "Access-Control-Allow-Origin": "*",
-              Authorization: `Bearer ${token}`,
-            },
-          })
+          .post(
+            `${process.env.VUE_APP_SERVER_PREDICT_URL}/predict?conf=0.7`,
+            formData,
+            {
+              timeout: 10000,
+              headers: {
+                "Content-Type": "multipart/form-data",
+                "Access-Control-Allow-Origin": "*",
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          )
           .then(async (res) => {
             isAcceptSave = await confirmImage(res.data.code);
-            console.log("isAcceptSave 1", isAcceptSave);
 
             if (isAcceptSave) {
               await uploadFile(formData); // Pass formData if necessary
@@ -155,7 +159,6 @@ export default defineComponent({
           .catch(async () => {
             // code 2: error
             isAcceptSave = await confirmImage(2);
-            console.log("isAcceptSave 2", isAcceptSave);
 
             if (isAcceptSave) {
               await uploadFile(formData); // Pass formData if necessary
@@ -169,8 +172,8 @@ export default defineComponent({
         let message = "";
         switch (code) {
           case 0:
-            message = "xác nhận";
-            break;
+            resolve(true);
+            return;
           case 1:
             message =
               "ảnh gửi lên không có ảnh điện thoại, bạn có muốn tiêp tục không?";
@@ -196,29 +199,25 @@ export default defineComponent({
       });
     };
 
+    // eslint-disable-next-line
     const uploadFile = async (formData: any) => {
-      try {
-        console.log("test file...");
-        // upload image to server
-        const token = localStorage.getItem("token");
-        await axios
-          .post(`${process.env.VUE_APP_SERVER_URL}/api/file`, formData, {
-            headers: {
-              "Content-Type": "multipart/form-data",
-              Authorization: `Bearer ${token}`,
-            },
-          })
-          .then((res) => {
-            dataModel.value.image_url = res.data;
-            file.value = undefined;
-          })
-          .catch((err) => {
-            console.error(err);
-          });
-        ctx.emit("save", dataModel.value);
-      } catch (error) {
-        console.log("Error when upload file", error);
-      }
+      // upload image to server
+      const token = localStorage.getItem("token");
+      await axios
+        .post(`${process.env.VUE_APP_SERVER_URL}/api/file`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((res) => {
+          dataModel.value.image_url = res.data;
+          file.value = undefined;
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+      ctx.emit("save", dataModel.value);
     };
 
     return {
