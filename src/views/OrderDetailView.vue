@@ -56,7 +56,6 @@ export default defineComponent({
       await ApiUtils.get(`/api/order-detail/${orderId}`)
         .then((res) => {
           data.value = res.data?.order?.items;
-          console.log("data", data.value);
         })
         .catch((err) => {
           console.log(err);
