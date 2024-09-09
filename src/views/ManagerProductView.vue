@@ -63,7 +63,7 @@
       />
     </div>
     <div
-      class="flex col-6 align-items-center justify-content-end gap-3 mb-3"
+      class="flex col-6 align-items-center justify-content-end gap-3 mb-2"
       v-if="mode === 'edit'"
     >
       <Button @click="manageVariat">
@@ -71,11 +71,121 @@
       </Button>
     </div>
   </div>
-  <Editor
-    v-if="!isManageVariations"
-    v-model="dataModel.description"
-    editorStyle="height: 320px"
-  />
+  <div v-if="!isManageVariations" class="grid">
+    <div class="w-full text-xl mb-2">Specification</div>
+    <div class="flex col-4 align-items-center gap-3 mb-3">
+      <label for="operation_system" class="font-semibold w-6rem">
+        operation system
+      </label>
+      <Dropdown
+        class="flex-auto text-left"
+        v-model="specifications.operatingSystem"
+        :options="[
+          { name: 'Android', value: 'Android' },
+          { name: 'IOS', value: 'IOS' },
+          { name: 'Windows', value: 'Windows' },
+        ]"
+        id="operation_system"
+        autocomplete="off"
+        option-label="name"
+        option-value="value"
+      />
+    </div>
+    <div class="flex col-4 align-items-center gap-3 mb-3">
+      <label for="internal_memory" class="font-semibold w-6rem">
+        internal memory
+      </label>
+      <InputNumber
+        v-model="specifications.internalMemory"
+        id="internal_memory"
+        class="flex-auto"
+        autocomplete="off"
+        :min="0"
+        suffix="GB"
+      />
+    </div>
+    <div class="flex col-4 align-items-center gap-3 mb-3">
+      <label for="ram" class="font-semibold w-6rem"> RAM </label>
+      <InputNumber
+        v-model="specifications.ram"
+        id="ram"
+        class="flex-auto"
+        autocomplete="off"
+        :min="0"
+        suffix="GB"
+      />
+    </div>
+    <div class="flex col-4 align-items-center gap-3 mb-3">
+      <label for="performance" class="font-semibold w-6rem">
+        performance
+      </label>
+      <InputNumber
+        v-model="specifications.performance"
+        id="performance"
+        class="flex-auto"
+        autocomplete="off"
+        :min="0"
+        suffix="GHz"
+      />
+    </div>
+    <div class="flex col-4 align-items-center gap-3 mb-3">
+      <label for="main_camera" class="font-semibold w-6rem">
+        Main Camera
+      </label>
+      <InputNumber
+        v-model="specifications.mainCamera"
+        id="main_camera"
+        class="flex-auto"
+        autocomplete="off"
+        :min="0"
+        suffix="MP"
+      />
+    </div>
+    <div class="flex col-4 align-items-center gap-3 mb-3">
+      <label for="selfie_camera" class="font-semibold w-6rem">
+        selfie Camera
+      </label>
+      <InputNumber
+        v-model="specifications.selfieCamera"
+        id="selfie_camera"
+        class="flex-auto"
+        autocomplete="off"
+        :min="0"
+        suffix="MP"
+      />
+    </div>
+    <div class="flex col-4 align-items-center gap-3 mb-3">
+      <label for="batery_size" class="font-semibold w-6rem">
+        batery size
+      </label>
+      <InputNumber
+        v-model="specifications.batterySize"
+        id="batery_size"
+        class="flex-auto"
+        autocomplete="off"
+        :min="0"
+        suffix="mAh"
+      />
+    </div>
+    <div class="flex col-4 align-items-center gap-3 mb-3">
+      <label for="weight" class="font-semibold w-6rem"> Weight </label>
+      <InputNumber
+        v-model="specifications.weight"
+        id="weight"
+        class="flex-auto"
+        autocomplete="off"
+        :min="0"
+        suffix="g"
+      />
+    </div>
+    <div class="w-full text-xl mb-2">Description</div>
+    <Editor
+      class="w-full"
+      v-if="!isManageVariations"
+      v-model="dataModel.description"
+      editorStyle="height: 200px"
+    />
+  </div>
   <DataTable
     v-else
     :value="variantions"
@@ -114,7 +224,12 @@
       severity="secondary"
       @click="$router.push('/admin/products')"
     ></Button>
-    <Button type="button" label="Delete" @click="deleteProduct"></Button>
+    <Button
+      v-if="mode === 'edit'"
+      type="button"
+      label="Delete"
+      @click="deleteProduct"
+    ></Button>
     <Button type="button" label="Save" @click="save"></Button>
   </div>
   <ProductVariationDialog
@@ -139,11 +254,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, ref, inject, onBeforeMount } from "vue";
+import { defineComponent, reactive, ref, inject, onMounted } from "vue";
 import InputText from "primevue/inputtext";
 import Dropdown from "primevue/dropdown";
 import Button from "primevue/button";
 import Editor from "primevue/editor";
+import Dialog from "primevue/dialog";
+import InputNumber from "primevue/inputnumber";
 import ApiUtils from "@/util/apiUtil";
 import { useRoute, useRouter } from "vue-router";
 import { useToast } from "primevue/usetoast";
@@ -152,7 +269,8 @@ import DataTable from "primevue/datatable";
 import Column from "primevue/column";
 
 import ProductVariationDialog from "@/components/ProductVariationDialog.vue";
-import Dialog from "primevue/dialog";
+
+import SpecificationDto from "@/dto/specificationDto";
 
 export default defineComponent({
   components: {
@@ -164,6 +282,7 @@ export default defineComponent({
     Column,
     ProductVariationDialog,
     Dialog,
+    InputNumber,
   },
   props: {
     visible: Boolean,
@@ -198,6 +317,7 @@ export default defineComponent({
     const dialogVisible = ref(false);
     const visibleConfirm = ref(false);
     const dataModel = reactive(props.data);
+    const specifications = reactive<SpecificationDto>({} as SpecificationDto);
     const variantions = ref([] as Variations[]);
     const brandOptions = ref([] as { name: string; value: number }[]);
     const categoryOptions = ref([] as { name: string; value: number }[]);
@@ -216,47 +336,66 @@ export default defineComponent({
       name: "",
     } as unknown as Variations);
 
-    const save = () => {
+    const save = async () => {
       let success = true;
       dataModel.category_id = dataModel.category.id;
       if (route.params.id) {
-        ApiUtils.put(`/api/san-pham/${route.params.id}`, dataModel)
-          .then(() => {
+        try {
+          await ApiUtils.put(`/api/san-pham/${route.params.id}`, dataModel);
+
+          try {
+            await ApiUtils.put(
+              `/api/san-pham/specification/${dataModel.id}`,
+              specifications
+            );
             toast.add({
               severity: "success",
               summary: "Success",
-              detail: "cập nhật sản phẩm thành công",
+              detail: "Cập nhật sản phẩm thành công",
               life: 3000,
             });
-          })
-          .catch(() => {
+          } catch (error) {
             toast.add({
               severity: "error",
               summary: "Error",
-              detail: "cập nhật sản phẩm thất bại",
+              detail: "Cập nhật specification thất bại",
               life: 3000,
             });
             success = false;
+          }
+        } catch (error) {
+          toast.add({
+            severity: "error",
+            summary: "Error",
+            detail: "Cập nhật sản phẩm thất bại",
+            life: 3000,
           });
+          success = false;
+        }
       } else {
-        ApiUtils.post("/api/san-pham", dataModel)
-          .then(() => {
+        try {
+          const res = await ApiUtils.post("/api/san-pham", dataModel);
+          const product_id = res.data.id;
+          await ApiUtils.put(
+            `/api/san-pham/specification/${product_id}`,
+            specifications
+          ).then(() => {
             toast.add({
               severity: "success",
               summary: "Success",
               detail: "Tạo sản phẩm thành công",
               life: 3000,
             });
-          })
-          .catch(() => {
-            toast.add({
-              severity: "error",
-              summary: "Error",
-              detail: "Tạo sản phẩm thất bại",
-              life: 3000,
-            });
-            success = false;
           });
+        } catch (error) {
+          toast.add({
+            severity: "error",
+            summary: "Error",
+            detail: "Tạo sản phẩm thất bại",
+            life: 3000,
+          });
+          success = false;
+        }
         if (success) {
           router.push("/admin/products");
           eventBus.emit("update:product", "success");
@@ -366,11 +505,23 @@ export default defineComponent({
         });
     };
 
+    const getApiSpecification = async () => {
+      const product_id = route.params.id;
+      if (product_id) {
+        await ApiUtils.get(`/api/san-pham/specification/${product_id}`).then(
+          (res) => {
+            Object.assign(specifications, res.data);
+          }
+        );
+      }
+    };
+
     // init data
-    onBeforeMount(() => {
+    onMounted(() => {
       getApiBrand();
       getApiCategory();
       getApiProduct();
+      getApiSpecification();
     });
     return {
       mode,
@@ -383,6 +534,7 @@ export default defineComponent({
       isManageVariations,
       selectedVariation,
       visibleConfirm,
+      specifications,
       save,
       saveVariation,
       manageVariat,
