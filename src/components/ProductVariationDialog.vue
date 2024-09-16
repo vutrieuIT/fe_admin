@@ -137,18 +137,14 @@ export default defineComponent({
 
         // verify image have phone
         await axios
-          .post(
-            `${process.env.VUE_APP_SERVER_PREDICT_URL}/predict?conf=0.7`,
-            formData,
-            {
-              timeout: 10000,
-              headers: {
-                "Content-Type": "multipart/form-data",
-                "Access-Control-Allow-Origin": "*",
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          )
+          .post(`${window.__API_PREDICT_URL__}/predict?conf=0.7`, formData, {
+            timeout: 10000,
+            headers: {
+              "Content-Type": "multipart/form-data",
+              "Access-Control-Allow-Origin": "*",
+              Authorization: `Bearer ${token}`,
+            },
+          })
           .then(async (res) => {
             isAcceptSave = await confirmImage(res.data.code);
 

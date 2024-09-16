@@ -11,10 +11,17 @@ import ConfirmationService from "primevue/confirmationservice";
 import ApiUtils from "./util/apiUtil";
 import mitt from "mitt";
 
+declare global {
+  interface Window {
+    __API_URL__: string;
+    __API_PREDICT_URL__: string;
+  }
+}
+
+console.log("API URL: ", window.__API_URL__);
+
 ApiUtils.init(
-  process.env.VUE_APP_SERVER_URL
-    ? process.env.VUE_APP_SERVER_URL
-    : "http://localhost:8001"
+  window.__API_URL__ ? window.__API_URL__ : "http://localhost:8001"
 );
 const eventBus = mitt();
 
