@@ -2,10 +2,6 @@ stages:
   - build
   - push
 
-job_name:
-  only:
-    - main
-
 variables:
   DOCKER_IMAGE: "trieuvu/admin:new"
 
