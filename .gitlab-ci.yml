@@ -1,0 +1,33 @@
+stages:
+  - build
+  - push
+
+job_name:
+  only:
+    - main
+
+variables:
+  DOCKER_IMAGE: "trieuvu/admin:new"
+
+before_script:
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+
+build:
+  stage: build
+  image: docker:latest
+  services:
+    - docker:dind
+  only:
+    - main
+  script:
+    - docker build -t $DOCKER_IMAGE .
+  
+push:
+  stage: push
+  image: docker:latest
+  services:
+    - docker:dind
+  only:
+    - main
+  script:
+    - docker push $DOCKER_IMAGE
