@@ -16,9 +16,6 @@ pipeline {
             }
         }
         stage('Build') {
-            when {
-                branch 'protect/deploy'
-            }
             steps {
                 withDockerRegistry(credentialsId: 'docker-hub', url: 'https://index.docker.io/v1/') {
                     sh 'docker build -t trieuvu/admin:new .'
@@ -29,10 +26,10 @@ pipeline {
     }
     post {
         success {
-            mail bcc: '', body: 'build done', cc: '', from: '', replyTo: '', subject: 'jenkins build', to: 'vutrieu2002@gmail.com'
+            mail bcc: '', body: 'build admin done', cc: '', from: '', replyTo: '', subject: 'jenkins build', to: 'vutrieu2002@gmail.com'
         }
         failure {
-            mail bcc: '', body: 'build fail', cc: '', from: '', replyTo: '', subject: 'jenkins build', to: 'vutrieu2002@gmail.com'
+            mail bcc: '', body: 'build admin fail', cc: '', from: '', replyTo: '', subject: 'jenkins build', to: 'vutrieu2002@gmail.com'
         }
     }
 }
