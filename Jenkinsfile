@@ -3,7 +3,7 @@ pipeline {
     stages {
         stage('Clone') {
             steps {
-                git branch: 'protect/deploy', url: 'https://github.com/vutrieuIT/fe_admin.git'
+                checkout scm
             }
         }
        stage('Check Branch') {
