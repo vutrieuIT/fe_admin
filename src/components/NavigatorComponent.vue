@@ -40,7 +40,6 @@ export default defineComponent({
         icon: "pi pi-shopping-cart",
         to: "/admin/products",
       },
-      { label: "Brands", icon: "pi pi-tags", to: "/admin/brands" },
       { label: "Orders", icon: "pi pi-shopping-cart", to: "/admin/orders" },
       { label: "Users", icon: "pi pi-user", to: "/admin/users" },
     ]);

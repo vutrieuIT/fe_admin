@@ -39,11 +39,6 @@ const routes: Array<RouteRecordRaw> = [
         component: ManagerProductView,
       },
       {
-        path: "Brands",
-        name: "brands",
-        component: BrandView,
-      },
-      {
         path: "orders",
         name: "orders",
         component: OrderView,
