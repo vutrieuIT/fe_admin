@@ -69,7 +69,7 @@ export default defineComponent({
     const first = ref(0);
 
     const callInitApi = async () => {
-      await ApiUtils.get("/api/all-user").then((res) => {
+      await ApiUtils.get("/api/mongo/all-user").then((res) => {
         users.value = res.data;
       });
     };
@@ -99,7 +99,7 @@ export default defineComponent({
 
     const save = async (user: unknown) => {
       visible.value = false;
-      await ApiUtils.post("/api/user/status", user as User)
+      await ApiUtils.post("/api/mongo/user/status", user as User)
         .then(() => {
           toast.add({
             severity: "success",

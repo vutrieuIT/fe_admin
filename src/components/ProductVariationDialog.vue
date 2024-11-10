@@ -200,7 +200,7 @@ export default defineComponent({
       // upload image to server
       const token = localStorage.getItem("token");
       await axios
-        .post(`${process.env.VUE_APP_SERVER_URL}/api/file`, formData, {
+        .post(`${process.env.VUE_APP_SERVER_URL}/api/mongo/file`, formData, {
           headers: {
             "Content-Type": "multipart/form-data",
             Authorization: `Bearer ${token}`,

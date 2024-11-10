@@ -10,15 +10,15 @@
           <label class="align-self-start" for="username">Tài khoản</label>
           <InputText
             id="username"
-            v-model="loginData.email"
+            v-model="loginData.account"
             aria-describedby="username-help"
           />
           <small
             class="text-red-500"
             id="username-help"
-            v-if="errorMessageDto.email"
+            v-if="errorMessageDto.account"
           >
-            {{ errorMessageDto.email }}
+            {{ errorMessageDto.account }}
           </small>
         </div>
         <div class="flex flex-column gap-2 mt-2">
@@ -52,13 +52,13 @@ import { useToast } from "primevue/usetoast";
 import { defineComponent, ref } from "vue";
 
 interface LoginDto {
-  email: string;
+  account: string;
   password: string;
   remember: boolean;
 }
 
 interface ErrorMessageDto {
-  email: string | null | undefined;
+  account: string | null | undefined;
   password: string | null | undefined;
 }
 
@@ -72,21 +72,21 @@ export default defineComponent({
     const router = useRouter();
 
     const loginData = ref<LoginDto>({
-      email: "",
+      account: "",
       password: "",
       remember: false,
     });
 
     const errorMessageDto = ref<ErrorMessageDto>({
-      email: null,
+      account: null,
       password: null,
     });
 
     const validateForm = () => {
-      if (loginData.value.email === null || loginData.value.email === "") {
-        errorMessageDto.value.email = "vui lòng nhập email";
+      if (loginData.value.account === null || loginData.value.account === "") {
+        errorMessageDto.value.account = "vui lòng nhập account";
       } else {
-        errorMessageDto.value.email = null;
+        errorMessageDto.value.account = null;
       }
       if (
         loginData.value.password === null ||
@@ -97,8 +97,8 @@ export default defineComponent({
         errorMessageDto.value.password = null;
       }
       if (
-        loginData.value.email !== null &&
-        loginData.value.email !== "" &&
+        loginData.value.account !== null &&
+        loginData.value.account !== "" &&
         loginData.value.password !== null &&
         loginData.value.password !== ""
       ) {
@@ -110,7 +110,7 @@ export default defineComponent({
       if (!validateForm()) {
         return;
       }
-      await ApiUtils.post("/api/login", loginData.value)
+      await ApiUtils.post("/api/mongo/employee/login", loginData.value)
         .then((response) => {
           sessionStorage.setItem("token", response.data.token);
 

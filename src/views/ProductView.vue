@@ -117,7 +117,7 @@ export default defineComponent({
 
     const save = (data: ProductDto) => {
       visible.value = false;
-      ApiUtils.post("/api/san-pham", data)
+      ApiUtils.post("/api/mongo/san-pham", data)
         .then(() => {
           toast.add({
             severity: "success",
@@ -139,7 +139,7 @@ export default defineComponent({
     const callApiDetete = async () => {
       visibleConfirm.value = false;
       ApiUtils.delete(
-        `/api/san-pham/variant/${selectedProduct.value.variant_id}`
+        `/api/mongo/san-pham/variant/${selectedProduct.value.variant_id}`
       )
         .then(() => {
           toast.add({
@@ -161,7 +161,7 @@ export default defineComponent({
     };
 
     const callApiInit = async () => {
-      ApiUtils.get("/api/san-pham").then((res) => {
+      ApiUtils.get("/api/mongo/san-pham").then((res) => {
         dataApi.value = res.data;
       });
     };

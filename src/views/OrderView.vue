@@ -64,7 +64,7 @@ export default defineComponent({
 
     const save = (data: OrderDto) => {
       visible.value = false;
-      ApiUtils.put("/api/order", data)
+      ApiUtils.put("/api/mongo/order", data)
         .then(() => {
           toast.add({
             severity: "success",
@@ -86,7 +86,7 @@ export default defineComponent({
 
     //
     const callApiInit = async () => {
-      await ApiUtils.get("/api/order").then((response) => {
+      await ApiUtils.get("/api/mongo/order").then((response) => {
         data.value = response.data.orders;
       });
     };

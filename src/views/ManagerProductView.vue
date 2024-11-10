@@ -341,11 +341,14 @@ export default defineComponent({
       dataModel.category_id = dataModel.category.id;
       if (route.params.id) {
         try {
-          await ApiUtils.put(`/api/san-pham/${route.params.id}`, dataModel);
+          await ApiUtils.put(
+            `/api/mongo/san-pham/${route.params.id}`,
+            dataModel
+          );
 
           try {
             await ApiUtils.put(
-              `/api/san-pham/specification/${dataModel.id}`,
+              `/api/mongo/san-pham/specification/${dataModel.id}`,
               specifications
             );
             toast.add({
@@ -374,10 +377,10 @@ export default defineComponent({
         }
       } else {
         try {
-          const res = await ApiUtils.post("/api/san-pham", dataModel);
+          const res = await ApiUtils.post("/api/mongo/san-pham", dataModel);
           const product_id = res.data.id;
           await ApiUtils.put(
-            `/api/san-pham/specification/${product_id}`,
+            `/api/mongo/san-pham/specification/${product_id}`,
             specifications
           ).then(() => {
             toast.add({
@@ -405,7 +408,7 @@ export default defineComponent({
 
     const saveVariation = async (data: Variations) => {
       if (data.id === null || data.id === undefined) {
-        await ApiUtils.post("/api/san-pham/variant", data)
+        await ApiUtils.post("/api/mongo/san-pham/variant", data)
           .then(() => {
             toast.add({
               severity: "success",
@@ -423,7 +426,7 @@ export default defineComponent({
             });
           });
       } else {
-        await ApiUtils.put(`/api/san-pham/variant/${data.id}`, data)
+        await ApiUtils.put(`/api/mongo/san-pham/variant/${data.id}`, data)
           .then(() => {
             toast.add({
               severity: "success",
@@ -456,7 +459,7 @@ export default defineComponent({
     };
 
     const getApiBrand = async () => {
-      await ApiUtils.get("/api/thuong-hieu").then((res) => {
+      await ApiUtils.get("/api/mongo/thuong-hieu").then((res) => {
         res.data.forEach((element: { name: string; id: number }) => {
           brandOptions.value.push({ name: element.name, value: element.id });
         });
@@ -464,7 +467,7 @@ export default defineComponent({
     };
 
     const getApiCategory = async () => {
-      await ApiUtils.get("/api/danh-muc-san-pham").then((res) => {
+      await ApiUtils.get("/api/mongo/danh-muc-san-pham").then((res) => {
         res.data.forEach((element: { name: string; id: number }) => {
           categoryOptions.value.push({
             name: element.name,
@@ -476,16 +479,18 @@ export default defineComponent({
 
     const getApiProduct = async () => {
       if (route.params.id) {
-        await ApiUtils.get(`/api/san-pham/${route.params.id}`).then((res) => {
-          Object.assign(dataModel, res.data);
-          Object.assign(variantions.value, res.data.variations);
-        });
+        await ApiUtils.get(`/api/mongo/san-pham/${route.params.id}`).then(
+          (res) => {
+            Object.assign(dataModel, res.data);
+            Object.assign(variantions.value, res.data.variations);
+          }
+        );
       }
     };
 
     const callApiDetete = async () => {
       visibleConfirm.value = false;
-      await ApiUtils.delete(`/api/san-pham/${route.params.id}`)
+      await ApiUtils.delete(`/api/mongo/san-pham/${route.params.id}`)
         .then(() => {
           toast.add({
             severity: "success",
@@ -508,11 +513,11 @@ export default defineComponent({
     const getApiSpecification = async () => {
       const product_id = route.params.id;
       if (product_id) {
-        await ApiUtils.get(`/api/san-pham/specification/${product_id}`).then(
-          (res) => {
-            Object.assign(specifications, res.data);
-          }
-        );
+        await ApiUtils.get(
+          `/api/mongo/san-pham/specification/${product_id}`
+        ).then((res) => {
+          Object.assign(specifications, res.data);
+        });
       }
     };
 

@@ -105,7 +105,7 @@ export default defineComponent({
     };
 
     const callApiCreate = async (category: CategoryDto) => {
-      await ApiUtils.post("/api/danh-muc-san-pham", category)
+      await ApiUtils.post("/api/mongo/danh-muc-san-pham", category)
         .then(() => {
           toast.add({
             severity: "success",
@@ -126,7 +126,7 @@ export default defineComponent({
     };
 
     const callApiUpdate = async (category: CategoryDto) => {
-      await ApiUtils.put(`/api/danh-muc-san-pham`, category)
+      await ApiUtils.put(`/api/mongo/danh-muc-san-pham`, category)
         .then(() => {
           toast.add({
             severity: "success",
@@ -147,7 +147,7 @@ export default defineComponent({
     };
 
     const callApiInit = async () => {
-      await ApiUtils.get("/api/danh-muc-san-pham").then((response) => {
+      await ApiUtils.get("/api/mongo/danh-muc-san-pham").then((response) => {
         data.value = response.data;
       });
     };
@@ -157,7 +157,7 @@ export default defineComponent({
     const callApiDetete = async () => {
       visibleConfirm.value = false;
       await ApiUtils.delete(
-        `/api/danh-muc-san-pham/${selectedCategory.value.id}`
+        `/api/mongo/danh-muc-san-pham/${selectedCategory.value.id}`
       )
         .then(() => {
           toast.add({

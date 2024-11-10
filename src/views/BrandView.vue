@@ -84,7 +84,7 @@ export default defineComponent({
     };
 
     const callApiCreate = async (data: BrandDto) => {
-      await ApiUtils.post("/api/thuong-hieu", data)
+      await ApiUtils.post("/api/mongo/thuong-hieu", data)
         .then(() => {
           toast.add({
             severity: "success",
@@ -106,7 +106,7 @@ export default defineComponent({
     };
 
     const callApiEdit = async (data: BrandDto) => {
-      await ApiUtils.put(`/api/thuong-hieu/${data.id}`, data)
+      await ApiUtils.put(`/api/mongo/thuong-hieu/${data.id}`, data)
         .then(() => {
           toast.add({
             severity: "success",
@@ -128,7 +128,7 @@ export default defineComponent({
     };
 
     const callApiDetete = async () => {
-      await ApiUtils.delete(`/api/thuong-hieu/${selectedBrand.value.id}`)
+      await ApiUtils.delete(`/api/mongo/thuong-hieu/${selectedBrand.value.id}`)
         .then(() => {
           toast.add({
             severity: "success",
@@ -165,7 +165,7 @@ export default defineComponent({
     };
 
     const getBrands = async () => {
-      ApiUtils.get("/api/thuong-hieu").then((res) => {
+      ApiUtils.get("/api/mongo/thuong-hieu").then((res) => {
         data.value = res.data;
       });
     };

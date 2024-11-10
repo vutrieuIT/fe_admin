@@ -53,7 +53,7 @@ export default defineComponent({
     const first = ref(0);
 
     const getOrderDetail = async () => {
-      await ApiUtils.get(`/api/order-detail/${orderId}`)
+      await ApiUtils.get(`/api/mongo/order-detail/${orderId}`)
         .then((res) => {
           data.value = res.data?.order?.items;
         })
