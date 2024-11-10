@@ -3,7 +3,6 @@ import LoginView from "@/views/LoginView.vue";
 import DashboardView from "@/views/DashboardView.vue";
 import ProductView from "@/views/ProductView.vue";
 import ManagerProductView from "@/views/ManagerProductView.vue";
-import CategoriesView from "@/views/CategoriesView.vue";
 import OrderView from "@/views/OrderView.vue";
 import UserView from "@/views/UserView.vue";
 import AdminView from "@/views/AdminView.vue";
@@ -38,11 +37,6 @@ const routes: Array<RouteRecordRaw> = [
         path: "products/mng/:id?",
         name: "products-mng",
         component: ManagerProductView,
-      },
-      {
-        path: "categories",
-        name: "categories",
-        component: CategoriesView,
       },
       {
         path: "Brands",
