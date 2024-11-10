@@ -86,9 +86,18 @@ export default defineComponent({
 
     //
     const callApiInit = async () => {
-      await ApiUtils.get("/api/mongo/order").then((response) => {
-        data.value = response.data.orders;
-      });
+      await ApiUtils.get("/api/mongo/order")
+        .then((response) => {
+          data.value = response.data.orders;
+        })
+        .catch((err) => {
+          toast.add({
+            severity: "error",
+            summary: "Error",
+            detail: err.response.data.message,
+            life: 3000,
+          });
+        });
     };
 
     callApiInit();

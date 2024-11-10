@@ -69,9 +69,17 @@ export default defineComponent({
     const first = ref(0);
 
     const callInitApi = async () => {
-      await ApiUtils.get("/api/mongo/all-user").then((res) => {
-        users.value = res.data;
-      });
+      await ApiUtils.get("/api/mongo/all-user")
+        .then((res) => {
+          users.value = res.data;
+        })
+        .catch((err) => {
+          toast.add({
+            severity: "error",
+            summary: "Error",
+            detail: err.response.data,
+          });
+        });
     };
 
     const visible = ref(false);
