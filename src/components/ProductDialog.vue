@@ -136,20 +136,8 @@ export default defineComponent({
       });
     };
 
-    const getApiCategory = async () => {
-      await ApiUtils.get("/api/mongo/danh-muc-san-pham").then((res) => {
-        res.data.forEach((element: { name: string; id: number }) => {
-          categoryOptions.value.push({
-            name: element.name,
-            value: element.id,
-          });
-        });
-      });
-    };
-
     // init data
     getApiBrand();
-    getApiCategory();
 
     return {
       categoryOptions,

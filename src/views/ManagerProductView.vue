@@ -466,17 +466,6 @@ export default defineComponent({
       });
     };
 
-    const getApiCategory = async () => {
-      await ApiUtils.get("/api/mongo/danh-muc-san-pham").then((res) => {
-        res.data.forEach((element: { name: string; id: number }) => {
-          categoryOptions.value.push({
-            name: element.name,
-            value: element.id,
-          });
-        });
-      });
-    };
-
     const getApiProduct = async () => {
       if (route.params.id) {
         await ApiUtils.get(`/api/mongo/san-pham/${route.params.id}`).then(
@@ -524,7 +513,6 @@ export default defineComponent({
     // init data
     onMounted(() => {
       getApiBrand();
-      getApiCategory();
       getApiProduct();
       getApiSpecification();
     });

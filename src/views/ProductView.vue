@@ -96,7 +96,7 @@ export default defineComponent({
     const first = ref(0);
 
     watch(dataApi, (newVal) => {
-      data.value = convertToProductDtos(newVal);
+      // data.value = convertToProductDtos(newVal);
     });
 
     const visible = ref(false);
