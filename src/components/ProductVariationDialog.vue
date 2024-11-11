@@ -8,30 +8,12 @@
     <div class="flex align-items-center gap-3 mb-3">
       <label for="color" class="font-semibold w-6rem"> Color </label>
       <Dropdown
-        v-model="dataModel.color_type"
+        v-model="dataModel.color"
         :options="colorList"
         id="color"
         class="flex-auto"
         optionLabel="name"
         optionValue="name"
-      />
-    </div>
-    <div class="flex align-items-center gap-3 mb-3">
-      <label for="price" class="font-semibold w-6rem"> Price </label>
-      <InputNumber
-        v-model="dataModel.price"
-        id="price"
-        class="flex-auto"
-        autocomplete="off"
-      />
-    </div>
-    <div class="flex align-items-center gap-3 mb-3">
-      <label for="price_sale" class="font-semibold w-6rem"> Price Sale </label>
-      <InputNumber
-        v-model="dataModel.price_sale"
-        id="price_sale"
-        class="flex-auto"
-        autocomplete="off"
       />
     </div>
     <div class="flex align-items-center gap-3 mb-3">
@@ -45,13 +27,7 @@
     </div>
     <div class="flex align-items-center gap-3 mb-3">
       <label for="image" class="font-semibold w-6rem"> image </label>
-      <InputText
-        v-model="dataModel.image_url"
-        id="image"
-        class="flex-auto"
-        autocomplete="off"
-        readonly
-      />
+      {{ dataModel.images }}
     </div>
     <div class="flex align-items-center gap-3 mb-3">
       <label for="image_file" class="font-semibold w-6rem"> imageFile </label>
@@ -80,7 +56,7 @@ import Dialog from "primevue/dialog";
 import ConfirmDialog from "primevue/confirmdialog";
 import { useConfirm } from "primevue/useconfirm";
 import InputText from "primevue/inputtext";
-import { Variations } from "@/dto/productAdminDto";
+import { Variant } from "@/dto/productAdminDto";
 import InputNumber from "primevue/inputnumber";
 import colorList from "@/dto/color";
 import Dropdown from "primevue/dropdown";
@@ -92,7 +68,6 @@ export default defineComponent({
   name: "ProductVariationDialog",
   components: {
     Dialog,
-    InputText,
     InputNumber,
     Dropdown,
     FileUpload,
@@ -102,7 +77,7 @@ export default defineComponent({
   props: {
     visible: Boolean,
     data: {
-      type: Object as () => Variations,
+      type: Object as () => Variant,
       required: false,
       default: () => {
         return {
@@ -207,7 +182,7 @@ export default defineComponent({
           },
         })
         .then((res) => {
-          dataModel.value.image_url = res.data;
+          dataModel.value.images[0] = res.data;
           file.value = undefined;
         })
         .catch((err) => {

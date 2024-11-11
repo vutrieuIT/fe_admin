@@ -12,7 +12,6 @@
     :rowsPerPageOptions="[5, 10, 20]"
     dataKey="id"
   >
-    <Column expander style="width: 2rem" />
     <Column field="name" header="Tên sản phẩm"></Column>
     <Column field="brandName" header="Thương hiệu"></Column>
     <Column field="isShow" header="hiển thị">
