@@ -6,7 +6,6 @@ import ManagerProductView from "@/views/ManagerProductView.vue";
 import OrderView from "@/views/OrderView.vue";
 import UserView from "@/views/UserView.vue";
 import AdminView from "@/views/AdminView.vue";
-import BrandView from "@/views/BrandView.vue";
 import OrderDetailView from "@/views/OrderDetailView.vue";
 const routes: Array<RouteRecordRaw> = [
   {

@@ -10,33 +10,59 @@
     :paginator="true"
     paginatorPosition="top"
     :rowsPerPageOptions="[5, 10, 20]"
-    rowGroupMode="rowspan"
-    groupRowsBy="name"
+    dataKey="id"
   >
-    <Column header="#" headerStyle="width:3rem">
+    <Column expander style="width: 2rem" />
+    <Column field="name" header="Tên sản phẩm"></Column>
+    <Column field="brandName" header="Thương hiệu"></Column>
+    <Column field="isShow" header="hiển thị">
       <template #body="slotProps">
-        {{ slotProps.index + 1 }}
+        <Button
+          type="button"
+          :label="slotProps.data[slotProps.field] ? 'Hiển thị' : 'Ẩn'"
+          :icon="
+            slotProps.data[slotProps.field] ? 'pi pi-eye' : 'pi pi-eye-slash'
+          "
+          :class="
+            slotProps.data[slotProps.field]
+              ? 'p-button-success'
+              : 'p-button-danger'
+          "
+          @click="
+            slotProps.data[slotProps.field] = !slotProps.data[slotProps.field]
+          "
+        ></Button>
       </template>
     </Column>
-    <Column field="name" header="Name"></Column>
-    <Column header="Image">
+    <Column field="status" header="Trạng thái">
       <template #body="slotProps">
-        <img
-          :src="slotProps.data.image"
-          alt="image"
-          style="width: 50px; height: 50px"
-        />
+        <Button
+          type="button"
+          :label="PRODUCT_STATUS[slotProps.data[slotProps.field]]"
+          :class="
+            slotProps.data[slotProps.field] === '0'
+              ? 'p-button-danger'
+              : slotProps.data[slotProps.field] === '1'
+              ? 'p-button-warning'
+              : 'p-button-success'
+          "
+        ></Button>
       </template>
     </Column>
-    <Column field="color" header="Color"></Column>
-    <Column field="price" header="Price"></Column>
-    <Column field="status" header="Status"></Column>
-    <Column header="Actions">
+    <Column header="Action" headerStyle="width:8rem">
       <template #body="slotProps">
-        <Button @click="editProduct(slotProps.data)">Edit</Button>
-        <Button class="ml-2" @click="deleteProduct(slotProps.data)">
-          Delete
-        </Button>
+        <Button
+          type="button"
+          icon="pi pi-pencil"
+          class="p-button-rounded p-button-success"
+          @click="editProduct(slotProps.data)"
+        ></Button>
+        <Button
+          type="button"
+          icon="pi pi-trash"
+          class="p-button-rounded p-button-danger"
+          @click="deleteProduct(slotProps.data)"
+        ></Button>
       </template>
     </Column>
   </DataTable>
@@ -67,14 +93,17 @@
 import Button from "primevue/button";
 import Column from "primevue/column";
 import DataTable from "primevue/datatable";
-import { defineComponent, ref, watch, inject } from "vue";
+import { defineComponent, ref, inject, onMounted, watch } from "vue";
 import ProductDialog from "@/components/ProductDialog.vue";
 import ProductDto from "@/dto/productDto";
 import ApiUtils from "@/util/apiUtil";
 import Dialog from "primevue/dialog";
 import { useToast } from "primevue/usetoast";
-import { convertToProductDtos } from "@/dto/productAdminDto";
 import { useRouter } from "vue-router";
+
+type ProductStatus = {
+  [key: string]: string;
+};
 
 export default defineComponent({
   components: {
@@ -94,13 +123,19 @@ export default defineComponent({
     const selectedProduct = ref({} as ProductDto);
     const rows = ref(5);
     const first = ref(0);
-
-    watch(dataApi, (newVal) => {
-      // data.value = convertToProductDtos(newVal);
-    });
+    const expandedRows = ref({});
+    const PRODUCT_STATUS = {
+      "0": "hết hàng",
+      "1": "sắp hêt hàng",
+      "2": "còn hàng",
+    } as ProductStatus;
 
     const visible = ref(false);
     const visibleConfirm = ref(false);
+
+    watch(dataApi, (val) => {
+      data.value = val;
+    });
 
     const createProduct = () => {
       router.push("/admin/products/mng");
@@ -161,17 +196,32 @@ export default defineComponent({
     };
 
     const callApiInit = async () => {
-      ApiUtils.get("/api/mongo/san-pham").then((res) => {
-        dataApi.value = res.data;
-      });
+      await ApiUtils.get("/api/mongo/san-pham")
+        .then((res) => {
+          console.log(res.data);
+          dataApi.value = res.data;
+        })
+        .catch(() => {
+          toast.add({
+            severity: "error",
+            summary: "Error",
+            detail: "lấy dữ liệu sản phẩm thất bại",
+            life: 3000,
+          });
+        });
     };
 
     // call when component created
-    callApiInit();
+    // callApiInit();
     eventBus.on("update:product", (data: string) => {
       if (data === "success") {
         callApiInit();
       }
+    });
+
+    onMounted(async () => {
+      await callApiInit();
+      console.log("dataApi", dataApi.value);
     });
 
     return {
@@ -181,11 +231,15 @@ export default defineComponent({
       visible,
       visibleConfirm,
       selectedProduct,
+      //
+      expandedRows,
       createProduct,
       editProduct,
       deleteProduct,
       callApiDetete,
       save,
+      // constant
+      PRODUCT_STATUS,
     };
   },
 });
