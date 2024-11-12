@@ -1,5 +1,5 @@
 <template>
-  <div class="text-2xl mb-2">Products</div>
+  <div class="text-2xl mb-2">Quản lý sản phẩm</div>
   <div class="grid">
     <div class="flex col-6 align-items-center gap-3 mb-3">
       <label for="product name" class="font-semibold w-6rem">
@@ -41,7 +41,7 @@
       v-if="mode === 'edit'"
     >
       <Button @click="manageVariat">
-        {{ isManageVariations ? "Manage Product" : "Manage Variations" }}
+        {{ isManageVariations ? "Quản lý sản phẩm" : "Quản lý phiên bản" }}
       </Button>
     </div>
   </div>
@@ -144,7 +144,7 @@
   >
     <template #header>
       <div class="w-full flex justify-content-end">
-        <Button>Thêm tùy chọn (update logic)</Button>
+        <Button @click="addSpecification()">Thêm Phiên bản</Button>
       </div>
     </template>
     <Column expander style="width: 2rem" />
@@ -206,6 +206,11 @@
     @save="saveVariation"
     :categoryOptions="categoryOptions"
   />
+  <ProductSpecificationDialog
+    v-model:visible="specDialogVisible"
+    v-model:specification="selectedSpecification"
+    @save="saveSpecification"
+  />
 
   <Dialog v-model:visible="visibleConfirm" header="confirm delete">
     <p>Bạn có chắc chắn sẽ xóa sản phẩm này chứ? - {{ dataModel.name }},</p>
@@ -242,6 +247,7 @@ import DataTable from "primevue/datatable";
 import Column from "primevue/column";
 
 import ProductVariationDialog from "@/components/ProductVariationDialog.vue";
+import ProductSpecificationDialog from "@/components/ProductSpecificationDialog.vue";
 
 import SpecificationDto from "@/dto/specificationDto";
 
@@ -254,6 +260,7 @@ export default defineComponent({
     DataTable,
     Column,
     ProductVariationDialog,
+    ProductSpecificationDialog,
     Dialog,
     InputNumber,
   },
@@ -289,6 +296,7 @@ export default defineComponent({
     const mode = route.params.id ? "edit" : "create";
 
     const dialogVisible = ref(false);
+    const specDialogVisible = ref(false);
     const visibleConfirm = ref(false);
     const dataModel = reactive(props.data);
     const specifications = reactive<SpecificationDto>({} as SpecificationDto);
@@ -365,8 +373,18 @@ export default defineComponent({
       dataModel.specifications.map((x) =>
         x.internalMemory === data.internalMemory ? data : x
       );
-      console.log("data specification", dataModel.specifications);
     };
+
+    const saveSpecification = async (data: Specification) => {
+      dataModel.specifications.some(
+        (x) => x.internalMemory === data.internalMemory
+      )
+        ? dataModel.specifications.map((x) =>
+            x.internalMemory === data.internalMemory ? data : x
+          )
+        : dataModel.specifications.push(data);
+    };
+
     const manageVariat = () => {
       isManageVariations.value = !isManageVariations.value;
     };
@@ -391,6 +409,15 @@ export default defineComponent({
       dataModel.specifications.map((x) =>
         x.internalMemory === spec.internalMemory ? spec : x
       );
+    };
+
+    const addSpecification = () => {
+      selectedSpecification.value = {
+        internalMemory: 0,
+        price: 0,
+        colorVariant: [],
+      };
+      specDialogVisible.value = true;
     };
 
     const removeSpecification = (data: Specification) => {
@@ -453,6 +480,7 @@ export default defineComponent({
     return {
       mode,
       dialogVisible,
+      specDialogVisible,
       dataModel,
       brandOptions,
       categoryOptions,
@@ -465,10 +493,12 @@ export default defineComponent({
       save,
       saveProduct,
       saveVariation,
+      saveSpecification,
       manageVariat,
       addColorVariant,
       editColorVariant,
       removeColorVariant,
+      addSpecification,
       removeSpecification,
       deleteProduct,
       callApiDetete,
