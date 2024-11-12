@@ -6,7 +6,7 @@
         Tên sản phẩm
       </label>
       <InputText
-        :disabled="isManageVariations"
+        :disabled="typeManage !== TYPE_MANAGE.DEFAUT"
         v-model="dataModel.name"
         id="product name"
         class="flex-auto"
@@ -16,7 +16,7 @@
     <div class="flex col-6 align-items-center gap-3 mb-3">
       <label for="brand" class="font-semibold w-6rem">Thương hiệu</label>
       <InputText
-        :disabled="isManageVariations"
+        :disabled="typeManage !== TYPE_MANAGE.DEFAUT"
         v-model="dataModel.brandName"
         id="brand"
         class="flex-auto"
@@ -26,7 +26,7 @@
     <div class="flex col-6 align-items-center gap-3 mb-3">
       <label for="brand" class="font-semibold w-6rem">Show/Hide</label>
       <Dropdown
-        :disabled="isManageVariations"
+        :disabled="typeManage !== TYPE_MANAGE.DEFAUT"
         v-model="dataModel.isShow"
         :options="showHideOptions"
         id="brand"
@@ -40,12 +40,24 @@
       class="flex col-6 align-items-center justify-content-end gap-3 mb-2"
       v-if="mode === 'edit'"
     >
-      <Button @click="manageVariat">
-        {{ isManageVariations ? "Quản lý sản phẩm" : "Quản lý phiên bản" }}
-      </Button>
+      <Button
+        v-if="typeManage !== TYPE_MANAGE.IMAGE"
+        @click="updateTypeManage(TYPE_MANAGE.IMAGE)"
+        >Quản lý hình ảnh</Button
+      >
+      <Button
+        v-if="typeManage !== TYPE_MANAGE.VARIATION"
+        @click="updateTypeManage(TYPE_MANAGE.VARIATION)"
+        >Quản lý phiên bản</Button
+      >
+      <Button
+        v-if="typeManage !== TYPE_MANAGE.DEFAUT"
+        @click="updateTypeManage(TYPE_MANAGE.DEFAUT)"
+        >Quản lý thông tin</Button
+      >
     </div>
   </div>
-  <div v-if="!isManageVariations" class="grid">
+  <div v-if="TYPE_MANAGE.DEFAUT === typeManage" class="grid">
     <div class="w-full text-xl mb-2">Thông số kỹ thuật</div>
     <div class="flex col-4 align-items-center gap-3 mb-3">
       <label for="operation_system" class="font-semibold w-6rem">
@@ -129,13 +141,13 @@
     <div class="w-full text-xl mb-2">Mô tả</div>
     <Editor
       class="w-full"
-      v-if="!isManageVariations"
+      v-if="TYPE_MANAGE.DEFAUT === typeManage"
       v-model="dataModel.description"
       editorStyle="height: 200px"
     />
   </div>
   <DataTable
-    v-else
+    v-if="TYPE_MANAGE.VARIATION === typeManage"
     :value="dataModel.specifications"
     rowGroupMode="rowspan"
     groupRowsBy="internalMemory"
@@ -251,6 +263,13 @@ import ProductSpecificationDialog from "@/components/ProductSpecificationDialog.
 
 import SpecificationDto from "@/dto/specificationDto";
 
+class TYPE_MANAGE {
+  static readonly VARIATION = "variation";
+  static readonly SPECIFICATION = "specification";
+  static readonly IMAGE = "image";
+  static readonly DEFAUT = "default";
+}
+
 export default defineComponent({
   components: {
     InputText,
@@ -295,6 +314,8 @@ export default defineComponent({
 
     const mode = route.params.id ? "edit" : "create";
 
+    const typeManage = ref(TYPE_MANAGE.DEFAUT);
+
     const dialogVisible = ref(false);
     const specDialogVisible = ref(false);
     const visibleConfirm = ref(false);
@@ -306,7 +327,6 @@ export default defineComponent({
       { name: "Show", value: true },
       { name: "Hide", value: false },
     ]);
-    const isManageVariations = ref(false);
     const selectedVariation = ref({
       color: "",
       quantity: 0,
@@ -386,7 +406,11 @@ export default defineComponent({
     };
 
     const manageVariat = () => {
-      isManageVariations.value = !isManageVariations.value;
+      // isManageVariations.value = !isManageVariations.value;
+    };
+
+    const updateTypeManage = (type: string) => {
+      typeManage.value = type;
     };
 
     // thêm tùy chọn màu
@@ -485,11 +509,13 @@ export default defineComponent({
       brandOptions,
       categoryOptions,
       showHideOptions,
-      isManageVariations,
       selectedSpecification,
       selectedVariation,
       visibleConfirm,
       specifications,
+      expandedRows,
+      typeManage,
+      updateTypeManage,
       save,
       saveProduct,
       saveVariation,
@@ -502,8 +528,8 @@ export default defineComponent({
       removeSpecification,
       deleteProduct,
       callApiDetete,
-      // test
-      expandedRows,
+      //
+      TYPE_MANAGE,
     };
   },
 });
