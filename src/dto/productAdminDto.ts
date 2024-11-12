@@ -19,7 +19,12 @@ interface ProductAdminDto {
 interface Specification {
   internalMemory: number;
   price: number;
-  color: string[];
+  colorVariant: ColorVariant[];
+}
+
+interface ColorVariant {
+  color: string;
+  quantity: number;
 }
 
 interface Variant {
@@ -29,4 +34,4 @@ interface Variant {
 }
 
 export default ProductAdminDto;
-export { Specification, Variant };
+export { Specification, ColorVariant, Variant };

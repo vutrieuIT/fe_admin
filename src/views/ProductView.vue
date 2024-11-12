@@ -72,10 +72,7 @@
   />
 
   <Dialog v-model:visible="visibleConfirm" header="confirm delete">
-    <p>
-      Are you sure you want to delete this variant? {{ selectedProduct.name }},
-      color: {{ selectedProduct.color }}
-    </p>
+    <p>Bạn có chắc chắn xóa sản phẩm này? {{ selectedProduct.name }}</p>
     <div class="flex justify-content-end gap-2">
       <Button
         type="button"
@@ -172,14 +169,12 @@ export default defineComponent({
 
     const callApiDetete = async () => {
       visibleConfirm.value = false;
-      ApiUtils.delete(
-        `/api/mongo/san-pham/variant/${selectedProduct.value.variant_id}`
-      )
+      ApiUtils.delete(`/api/mongo/san-pham/${selectedProduct.value.id}`)
         .then(() => {
           toast.add({
             severity: "success",
             summary: "Success",
-            detail: "xóa phiên bản sản phẩm thành công",
+            detail: "xóa sản phẩm thành công",
             life: 3000,
           });
           callApiInit();
@@ -188,7 +183,7 @@ export default defineComponent({
           toast.add({
             severity: "error",
             summary: "Error",
-            detail: "xóa phiên bản sản phẩm thất bại",
+            detail: "xóa sản phẩm thất bại",
             life: 3000,
           });
         });

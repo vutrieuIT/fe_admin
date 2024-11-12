@@ -126,7 +126,7 @@
         suffix="g"
       />
     </div>
-    <div class="w-full text-xl mb-2">Description</div>
+    <div class="w-full text-xl mb-2">Mô tả</div>
     <Editor
       class="w-full"
       v-if="!isManageVariations"
@@ -136,34 +136,47 @@
   </div>
   <DataTable
     v-else
-    :value="dataModel.variants"
+    :value="dataModel.specifications"
     rowGroupMode="rowspan"
-    groupRowsBy="name"
+    groupRowsBy="internalMemory"
     showGridlines
+    v-model:expandedRows="expandedRows"
   >
     <template #header>
       <div class="w-full flex justify-content-end">
-        <Button @click="dialogVisible = true">Add</Button>
+        <Button @click="dialogVisible = true"
+          >Thêm tùy chọn (update logic)</Button
+        >
       </div>
     </template>
-    <Column field="color_type" header="color"></Column>
-    <Column field="price" header="price"></Column>
-    <Column field="quantity" header="amount"></Column>
-    <Column field="image_url" header="image">
-      <template #body="slotProps">
-        <img
-          :src="slotProps.data.image_url"
-          alt="image"
-          style="width: 50px; height: 50px"
-        />
-      </template>
-    </Column>
+    <Column expander style="width: 2rem" />
+    <Column field="internalMemory" header="Bộ nhớ"></Column>
+    <Column field="price" header="Giá"></Column>
     <Column header="Actions">
       <template #body="slotProps">
-        <Button @click="editVariation(slotProps.data)">Edit</Button>
-        <Button class="ml-2"> Delete </Button>
+        <Button @click="addColorVariant(slotProps.data)"
+          >Thêm tùy chọn màu (update logic)</Button
+        >
+        <Button class="ml-2">Xóa (update logic)</Button>
       </template>
     </Column>
+    <template #expansion="slotProps">
+      <DataTable
+        :value="slotProps.data.colorVariant"
+        rowGroupMode="rowspan"
+        groupRowsBy="color"
+        showGridlines
+      >
+        <Column field="color" header="Màu"></Column>
+        <Column field="quantity" header="Số lượng"></Column>
+        <Column header="Actions">
+          <template #body="">
+            <Button>Cập nhật (update logic)</Button>
+            <Button class="ml-2">Xóa (update logic)</Button>
+          </template>
+        </Column>
+      </DataTable>
+    </template>
   </DataTable>
   <div class="flex justify-content-end gap-2">
     <Button
@@ -183,6 +196,7 @@
   <ProductVariationDialog
     v-model:visible="dialogVisible"
     :data="selectedVariation"
+    v-model:specification="selectedSpecification"
     @save="saveVariation"
     :categoryOptions="categoryOptions"
   />
@@ -212,7 +226,11 @@ import InputNumber from "primevue/inputnumber";
 import ApiUtils from "@/util/apiUtil";
 import { useRoute, useRouter } from "vue-router";
 import { useToast } from "primevue/usetoast";
-import ProductAdminDto, { Variant } from "@/dto/productAdminDto";
+import ProductAdminDto, {
+  Variant,
+  ColorVariant,
+  Specification,
+} from "@/dto/productAdminDto";
 import DataTable from "primevue/datatable";
 import Column from "primevue/column";
 
@@ -274,44 +292,29 @@ export default defineComponent({
     ]);
     const isManageVariations = ref(false);
     const selectedVariation = ref({
-      product_id: route.params.id.toString(),
       color: "",
+      quantity: 0,
+    } as unknown as ColorVariant);
+    const selectedSpecification = ref({
+      internalMemory: 0,
       price: 0,
-      price_sale: 0,
-      amount: 0,
-      image_url: "",
-      name: "",
-    } as unknown as Variant);
+      colorVariant: [],
+    } as unknown as Specification);
+
+    // dropdown của specification
+    const expandedRows = ref([]);
 
     const save = async () => {
       let success = true;
       if (route.params.id) {
         try {
-          await ApiUtils.put(
-            `/api/mongo/san-pham/${route.params.id}`,
-            dataModel
-          );
-
-          try {
-            await ApiUtils.put(
-              `/api/mongo/san-pham/specification/${dataModel.id}`,
-              specifications
-            );
-            toast.add({
-              severity: "success",
-              summary: "Success",
-              detail: "Cập nhật sản phẩm thành công",
-              life: 3000,
-            });
-          } catch (error) {
-            toast.add({
-              severity: "error",
-              summary: "Error",
-              detail: "Cập nhật specification thất bại",
-              life: 3000,
-            });
-            success = false;
-          }
+          await ApiUtils.put(`/api/mongo/san-pham`, dataModel);
+          toast.add({
+            severity: "success",
+            summary: "Success",
+            detail: "Cập nhật sản phẩm thành công",
+            life: 3000,
+          });
         } catch (error) {
           toast.add({
             severity: "error",
@@ -323,19 +326,7 @@ export default defineComponent({
         }
       } else {
         try {
-          const res = await ApiUtils.post("/api/mongo/san-pham", dataModel);
-          const product_id = res.data.id;
-          await ApiUtils.put(
-            `/api/mongo/san-pham/specification/${product_id}`,
-            specifications
-          ).then(() => {
-            toast.add({
-              severity: "success",
-              summary: "Success",
-              detail: "Tạo sản phẩm thành công",
-              life: 3000,
-            });
-          });
+          await ApiUtils.post("/api/mongo/san-pham", dataModel);
         } catch (error) {
           toast.add({
             severity: "error",
@@ -352,50 +343,24 @@ export default defineComponent({
       }
     };
 
-    const saveVariation = async (data: Variant) => {
-      if (data === undefined) {
-        await ApiUtils.post("/api/mongo/san-pham/variant", data)
-          .then(() => {
-            toast.add({
-              severity: "success",
-              summary: "Success",
-              detail: "Create variation success",
-              life: 3000,
-            });
-          })
-          .catch(() => {
-            toast.add({
-              severity: "error",
-              summary: "Error",
-              detail: "Create variation fail",
-              life: 3000,
-            });
-          });
-      } else {
-        await ApiUtils.put(`/api/mongo/san-pham/variant`, data)
-          .then(() => {
-            toast.add({
-              severity: "success",
-              summary: "Success",
-              detail: "Update variation success",
-              life: 3000,
-            });
-          })
-          .catch(() => {
-            toast.add({
-              severity: "error",
-              summary: "Error",
-              detail: "Update variation fail",
-              life: 3000,
-            });
-          });
-      }
+    const saveVariation = async (data: Specification) => {
+      dataModel.specifications.map((x) =>
+        x.internalMemory === data.internalMemory ? data : x
+      );
+      console.log("data specification", dataModel.specifications);
     };
     const manageVariat = () => {
       isManageVariations.value = !isManageVariations.value;
     };
 
-    const editVariation = (data: Variant) => {
+    // thêm tùy chọn màu
+    const addColorVariant = (model: Specification) => {
+      selectedSpecification.value = { ...model };
+      selectedVariation.value = { color: "", quantity: 0 };
+      dialogVisible.value = true;
+    };
+
+    const editVariation = (data: ColorVariant) => {
       selectedVariation.value = { ...data };
       dialogVisible.value = true;
     };
@@ -417,7 +382,6 @@ export default defineComponent({
         await ApiUtils.get(`/api/mongo/san-pham/${route.params.id}`).then(
           (res) => {
             Object.assign(dataModel, res.data);
-            // Object.assign(variantions.value, res.data.variations);
           }
         );
       }
@@ -450,9 +414,8 @@ export default defineComponent({
       await getApiBrand();
       await getApiProduct();
       console.log("dataModel", dataModel);
-
-      // getApiSpecification();
     });
+
     return {
       mode,
       dialogVisible,
@@ -461,15 +424,19 @@ export default defineComponent({
       categoryOptions,
       showHideOptions,
       isManageVariations,
+      selectedSpecification,
       selectedVariation,
       visibleConfirm,
       specifications,
       save,
       saveVariation,
       manageVariat,
+      addColorVariant,
       editVariation,
       deleteProduct,
       callApiDetete,
+      // test
+      expandedRows,
     };
   },
 });

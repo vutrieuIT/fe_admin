@@ -6,7 +6,7 @@
     :style="{ width: '30rem' }"
   >
     <div class="flex align-items-center gap-3 mb-3">
-      <label for="color" class="font-semibold w-6rem"> Color </label>
+      <label for="color" class="font-semibold w-6rem"> Màu </label>
       <Dropdown
         v-model="dataModel.color"
         :options="colorList"
@@ -17,7 +17,7 @@
       />
     </div>
     <div class="flex align-items-center gap-3 mb-3">
-      <label for="quantity" class="font-semibold w-6rem"> quantity </label>
+      <label for="quantity" class="font-semibold w-6rem"> Số lượng </label>
       <InputNumber
         v-model="dataModel.quantity"
         id="quantity"
@@ -25,25 +25,10 @@
         autocomplete="off"
       />
     </div>
-    <div class="flex align-items-center gap-3 mb-3">
-      <label for="image" class="font-semibold w-6rem"> image </label>
-      {{ dataModel.images }}
-    </div>
-    <div class="flex align-items-center gap-3 mb-3">
-      <label for="image_file" class="font-semibold w-6rem"> imageFile </label>
-      <FileUpload
-        ref="file"
-        mode="basic"
-        id="image_file"
-        class="flex-auto"
-        autocomplete="off"
-        @select="file = $event.files[0]"
-      ></FileUpload>
-    </div>
     <template #footer>
       <div class="flex justify-end gap-3">
-        <Button label="Cancel" @click="visibleModel = false"> Cancel </Button>
-        <Button label="Save" @click="save"> Save </Button>
+        <Button label="Cancel" @click="visibleModel = false"> Hủy </Button>
+        <Button label="Save" @click="save"> Lưu </Button>
       </div>
     </template>
   </Dialog>
@@ -54,14 +39,10 @@
 import { defineComponent, computed, ref } from "vue";
 import Dialog from "primevue/dialog";
 import ConfirmDialog from "primevue/confirmdialog";
-import { useConfirm } from "primevue/useconfirm";
-import InputText from "primevue/inputtext";
-import { Variant } from "@/dto/productAdminDto";
+import { ColorVariant, Specification } from "@/dto/productAdminDto";
 import InputNumber from "primevue/inputnumber";
 import colorList from "@/dto/color";
 import Dropdown from "primevue/dropdown";
-import FileUpload from "primevue/fileupload";
-import axios from "axios";
 import Button from "primevue/button";
 
 export default defineComponent({
@@ -70,30 +51,31 @@ export default defineComponent({
     Dialog,
     InputNumber,
     Dropdown,
-    FileUpload,
     ConfirmDialog,
     Button,
   },
   props: {
     visible: Boolean,
     data: {
-      type: Object as () => Variant,
+      type: Object as () => ColorVariant,
       required: false,
       default: () => {
         return {
           color: "",
-          price: 0,
-          amount: 0,
+          quantity: 0,
         };
       },
+    },
+    specification: {
+      type: Object as () => Specification,
+      required: true,
     },
     categoryOptions: Array,
     brandOptions: Array,
   },
-  emits: ["update:visible", "save"],
+  emits: ["update:visible", "update:specification", "save"],
   setup(props, ctx) {
     const file = ref<File | undefined | null>(null);
-    const confirm = useConfirm();
     const visibleModel = computed({
       get: () => props.visible,
       set: (value) => {
@@ -101,94 +83,26 @@ export default defineComponent({
       },
     });
     const dataModel = computed(() => props.data);
-
+    const specificationModel = computed({
+      get: () => props.specification,
+      set: (value) => {
+        ctx.emit("update:specification", value);
+      },
+    });
     const save = async () => {
-      visibleModel.value = false;
-      let isAcceptSave = true;
-      if (file.value?.size && file.value?.name) {
-        const formData = new FormData();
-        formData.append("file", file.value);
-        const token = localStorage.getItem("token");
+      specificationModel.value.colorVariant.some(
+        (x: ColorVariant) => x.color === dataModel.value.color
+      )
+        ? (specificationModel.value.colorVariant =
+            specificationModel.value.colorVariant.map((x) =>
+              x.color === dataModel.value.color
+                ? { ...x, quantity: dataModel.value.quantity }
+                : x
+            ))
+        : specificationModel.value.colorVariant.push(dataModel.value);
 
-        // verify image have phone
-        await axios
-          .post(`${window.__API_PREDICT_URL__}/predict?conf=0.7`, formData, {
-            timeout: 10000,
-            headers: {
-              "Content-Type": "multipart/form-data",
-              "Access-Control-Allow-Origin": "*",
-              Authorization: `Bearer ${token}`,
-            },
-          })
-          .then(async (res) => {
-            isAcceptSave = await confirmImage(res.data.code);
-
-            if (isAcceptSave) {
-              await uploadFile(formData); // Pass formData if necessary
-            }
-          })
-          .catch(async () => {
-            // code 2: error
-            isAcceptSave = await confirmImage(2);
-
-            if (isAcceptSave) {
-              await uploadFile(formData); // Pass formData if necessary
-            }
-          });
-      }
-    };
-
-    const confirmImage = (code: number): Promise<boolean> => {
-      return new Promise((resolve) => {
-        let message = "";
-        switch (code) {
-          case 0:
-            resolve(true);
-            return;
-          case 1:
-            message =
-              "ảnh gửi lên không có ảnh điện thoại, bạn có muốn tiêp tục không?";
-            break;
-          default:
-            message =
-              "xác thực ảnh không thành công, bạn có muốn tiêp tục không?";
-            break;
-        }
-
-        confirm.require({
-          message: message,
-          header: "Thông báo",
-          rejectLabel: "Hủy",
-          acceptLabel: "Đồng ý",
-          accept: () => {
-            resolve(true);
-          },
-          reject: () => {
-            resolve(false);
-          },
-        });
-      });
-    };
-
-    // eslint-disable-next-line
-    const uploadFile = async (formData: any) => {
-      // upload image to server
-      const token = localStorage.getItem("token");
-      await axios
-        .post(`${process.env.VUE_APP_SERVER_URL}/api/mongo/file`, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then((res) => {
-          dataModel.value.images[0] = res.data;
-          file.value = undefined;
-        })
-        .catch((err) => {
-          console.error(err);
-        });
       ctx.emit("save", dataModel.value);
+      visibleModel.value = false;
     };
 
     return {
@@ -197,7 +111,6 @@ export default defineComponent({
       visibleModel,
       dataModel,
       save,
-      // handleFileSelect,
     };
   },
 });
