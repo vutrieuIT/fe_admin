@@ -14,6 +14,7 @@
         class="flex-auto"
         optionLabel="name"
         optionValue="name"
+        :disabled="isEdit"
       />
     </div>
     <div class="flex align-items-center gap-3 mb-3">
@@ -36,7 +37,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref } from "vue";
+import { defineComponent, computed, ref, watch } from "vue";
 import Dialog from "primevue/dialog";
 import ConfirmDialog from "primevue/confirmdialog";
 import { ColorVariant, Specification } from "@/dto/productAdminDto";
@@ -75,38 +76,54 @@ export default defineComponent({
   },
   emits: ["update:visible", "update:specification", "save"],
   setup(props, ctx) {
-    const file = ref<File | undefined | null>(null);
+    const isEdit = computed(() => props.data.color !== "");
+
     const visibleModel = computed({
       get: () => props.visible,
       set: (value) => {
         ctx.emit("update:visible", value);
       },
     });
-    const dataModel = computed(() => props.data);
+
+    const dataModel = ref({
+      color: props.data.color,
+      quantity: props.data.quantity,
+    });
+
     const specificationModel = computed({
       get: () => props.specification,
       set: (value) => {
         ctx.emit("update:specification", value);
       },
     });
+
+    watch(
+      () => props.data,
+      (newData) => {
+        dataModel.value = { ...newData };
+      },
+      { immediate: true }
+    );
+
     const save = async () => {
-      specificationModel.value.colorVariant.some(
-        (x: ColorVariant) => x.color === dataModel.value.color
-      )
-        ? (specificationModel.value.colorVariant =
-            specificationModel.value.colorVariant.map((x) =>
-              x.color === dataModel.value.color
-                ? { ...x, quantity: dataModel.value.quantity }
-                : x
-            ))
-        : specificationModel.value.colorVariant.push(dataModel.value);
+      const existingVariantIndex =
+        specificationModel.value.colorVariant.findIndex(
+          (x: ColorVariant) => x.color === dataModel.value.color
+        );
+
+      if (existingVariantIndex >= 0) {
+        specificationModel.value.colorVariant[existingVariantIndex].quantity =
+          dataModel.value.quantity;
+      } else {
+        specificationModel.value.colorVariant.push({ ...dataModel.value });
+      }
 
       ctx.emit("save", dataModel.value);
       visibleModel.value = false;
     };
 
     return {
-      file,
+      isEdit,
       colorList,
       visibleModel,
       dataModel,

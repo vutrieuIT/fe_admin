@@ -144,9 +144,7 @@
   >
     <template #header>
       <div class="w-full flex justify-content-end">
-        <Button @click="dialogVisible = true"
-          >Thêm tùy chọn (update logic)</Button
-        >
+        <Button>Thêm tùy chọn (update logic)</Button>
       </div>
     </template>
     <Column expander style="width: 2rem" />
@@ -155,9 +153,11 @@
     <Column header="Actions">
       <template #body="slotProps">
         <Button @click="addColorVariant(slotProps.data)"
-          >Thêm tùy chọn màu (update logic)</Button
+          >Thêm tùy chọn màu</Button
         >
-        <Button class="ml-2">Xóa (update logic)</Button>
+        <Button class="ml-2" @click="removeSpecification(slotProps.data)"
+          >Xóa</Button
+        >
       </template>
     </Column>
     <template #expansion="slotProps">
@@ -170,9 +170,15 @@
         <Column field="color" header="Màu"></Column>
         <Column field="quantity" header="Số lượng"></Column>
         <Column header="Actions">
-          <template #body="">
-            <Button>Cập nhật (update logic)</Button>
-            <Button class="ml-2">Xóa (update logic)</Button>
+          <template #body="slotProps1">
+            <Button @click="editColorVariant(slotProps1.data, slotProps.data)"
+              >Cập nhật</Button
+            >
+            <Button
+              class="ml-2"
+              @click="removeColorVariant(slotProps1.data, slotProps.data)"
+              >Xóa</Button
+            >
           </template>
         </Column>
       </DataTable>
@@ -202,7 +208,7 @@
   />
 
   <Dialog v-model:visible="visibleConfirm" header="confirm delete">
-    <p>Are you sure you want to delete this product? - {{ dataModel.name }},</p>
+    <p>Bạn có chắc chắn sẽ xóa sản phẩm này chứ? - {{ dataModel.name }},</p>
     <div class="flex justify-content-end gap-2">
       <Button
         type="button"
@@ -213,6 +219,7 @@
       <Button type="button" label="Delete" @click="callApiDetete"></Button>
     </div>
   </Dialog>
+  <ConfirmDialog />
 </template>
 
 <script lang="ts">
@@ -226,8 +233,8 @@ import InputNumber from "primevue/inputnumber";
 import ApiUtils from "@/util/apiUtil";
 import { useRoute, useRouter } from "vue-router";
 import { useToast } from "primevue/usetoast";
+import { useConfirm } from "primevue/useconfirm";
 import ProductAdminDto, {
-  Variant,
   ColorVariant,
   Specification,
 } from "@/dto/productAdminDto";
@@ -277,6 +284,7 @@ export default defineComponent({
     const route = useRoute();
     const router = useRouter();
     const toast = useToast();
+    const confirm = useConfirm();
 
     const mode = route.params.id ? "edit" : "create";
 
@@ -304,7 +312,17 @@ export default defineComponent({
     // dropdown của specification
     const expandedRows = ref([]);
 
-    const save = async () => {
+    const save = () => {
+      confirm.require({
+        message: "Bạn có chắc chắn muốn lưu sản phẩm này?",
+        header: "Xác nhận lưu",
+        accept: () => {
+          saveProduct();
+        },
+      });
+    };
+
+    const saveProduct = async () => {
       let success = true;
       if (route.params.id) {
         try {
@@ -360,9 +378,25 @@ export default defineComponent({
       dialogVisible.value = true;
     };
 
-    const editVariation = (data: ColorVariant) => {
+    const editColorVariant = (data: ColorVariant, spec: Specification) => {
+      selectedSpecification.value = { ...spec };
       selectedVariation.value = { ...data };
       dialogVisible.value = true;
+    };
+
+    const removeColorVariant = (data: ColorVariant, spec: Specification) => {
+      spec.colorVariant = spec.colorVariant.filter(
+        (x) => x.color !== data.color
+      );
+      dataModel.specifications.map((x) =>
+        x.internalMemory === spec.internalMemory ? spec : x
+      );
+    };
+
+    const removeSpecification = (data: Specification) => {
+      dataModel.specifications = dataModel.specifications.filter(
+        (x) => x.internalMemory !== data.internalMemory
+      );
     };
 
     const deleteProduct = () => {
@@ -429,10 +463,13 @@ export default defineComponent({
       visibleConfirm,
       specifications,
       save,
+      saveProduct,
       saveVariation,
       manageVariat,
       addColorVariant,
-      editVariation,
+      editColorVariant,
+      removeColorVariant,
+      removeSpecification,
       deleteProduct,
       callApiDetete,
       // test
