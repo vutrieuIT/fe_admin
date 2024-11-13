@@ -29,7 +29,6 @@ interface ColorVariant {
 
 interface Variant {
   color: string;
-  quantity: number;
   images: string[];
 }
 

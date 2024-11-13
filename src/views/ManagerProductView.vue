@@ -196,20 +196,76 @@
       </DataTable>
     </template>
   </DataTable>
+  <div v-if="TYPE_MANAGE.IMAGE === typeManage">
+    <div class="w-full text-xl mb-2">Hình ảnh</div>
+    <DataTable
+      v-model:expandedRows="expandedRows"
+      :value="dataModel.variants"
+      rowGroupMode="rowspan"
+      groupRowsBy="color"
+      showGridlines
+    >
+      <template #header>
+        <div class="w-full flex justify-content-end">
+          <Button @click="editImageColor({ color: '', images: [] })"
+            >Thêm màu</Button
+          >
+        </div>
+      </template>
+      <Column expander style="width: 2rem" />
+      <Column field="color" header="Màu"></Column>
+      <Column header="Thao tác">
+        <template #body="slotProps">
+          <Button @click="editImageColor(slotProps.data)">Cập nhật</Button>
+          <Button class="ml-2" @click="deleteImageColor(slotProps.data.color)"
+            >Xóa</Button
+          >
+        </template>
+      </Column>
+      <template #expansion="slotProps">
+        <DataTable
+          :value="slotProps.data.images"
+          rowGroupMode="rowspan"
+          groupRowsBy="color"
+          showGridlines
+        >
+          <Column header="ảnh">
+            <template #body="slotProps">
+              <Image
+                :src="`${API_URL + slotProps.data}`"
+                alt="image"
+                image-style="width: 100px; height: 100px"
+                preview
+              />
+            </template>
+          </Column>
+          <Column header="Thao tác">
+            <template #body="slotPropsChild">
+              <Button
+                class="ml-2"
+                @click="deleteImage(slotProps.data, slotPropsChild.data)"
+                >Xóa</Button
+              >
+            </template>
+          </Column>
+        </DataTable>
+      </template>
+    </DataTable>
+  </div>
   <div class="flex justify-content-end gap-2">
     <Button
       type="button"
-      label="Cancel"
+      label="Hủy thao tác"
       severity="secondary"
       @click="$router.push('/admin/products')"
     ></Button>
     <Button
       v-if="mode === 'edit'"
       type="button"
-      label="Delete"
+      label="Xóa sản phẩm"
       @click="deleteProduct"
     ></Button>
-    <Button type="button" label="Save" @click="save"></Button>
+    <Button type="button" label="Lưu sản phẩm" @click="save"></Button>
   </div>
   <ProductVariationDialog
     v-model:visible="dialogVisible"
@@ -223,6 +279,11 @@
     v-model:specification="selectedSpecification"
     @save="saveSpecification"
   />
+  <ProductImageDialog
+    v-model:visible="imageDialogVisible"
+    v-model:data="selectedColorVariant"
+    @save="saveImage"
+  ></ProductImageDialog>
 
   <Dialog v-model:visible="visibleConfirm" header="confirm delete">
     <p>Bạn có chắc chắn sẽ xóa sản phẩm này chứ? - {{ dataModel.name }},</p>
@@ -254,14 +315,16 @@ import { useConfirm } from "primevue/useconfirm";
 import ProductAdminDto, {
   ColorVariant,
   Specification,
+  Variant,
 } from "@/dto/productAdminDto";
 import DataTable from "primevue/datatable";
 import Column from "primevue/column";
-
+import Image from "primevue/image";
 import ProductVariationDialog from "@/components/ProductVariationDialog.vue";
 import ProductSpecificationDialog from "@/components/ProductSpecificationDialog.vue";
 
 import SpecificationDto from "@/dto/specificationDto";
+import ProductImageDialog from "@/components/ProductImageDialog.vue";
 
 class TYPE_MANAGE {
   static readonly VARIATION = "variation";
@@ -280,8 +343,10 @@ export default defineComponent({
     Column,
     ProductVariationDialog,
     ProductSpecificationDialog,
+    ProductImageDialog,
     Dialog,
     InputNumber,
+    Image,
   },
   props: {
     visible: Boolean,
@@ -315,9 +380,11 @@ export default defineComponent({
     const mode = route.params.id ? "edit" : "create";
 
     const typeManage = ref(TYPE_MANAGE.DEFAUT);
+    const API_URL = window.__API_URL__;
 
     const dialogVisible = ref(false);
     const specDialogVisible = ref(false);
+    const imageDialogVisible = ref(false);
     const visibleConfirm = ref(false);
     const dataModel = reactive(props.data);
     const specifications = reactive<SpecificationDto>({} as SpecificationDto);
@@ -336,6 +403,11 @@ export default defineComponent({
       price: 0,
       colorVariant: [],
     } as unknown as Specification);
+
+    const selectedColorVariant = ref({
+      color: "",
+      images: [],
+    } as unknown as Variant);
 
     // dropdown của specification
     const expandedRows = ref([]);
@@ -405,6 +477,17 @@ export default defineComponent({
         : dataModel.specifications.push(data);
     };
 
+    const saveImage = async (data: Variant) => {
+      const existingVariantIndex = dataModel.variants.findIndex(
+        (x) => x.color === data.color
+      );
+      if (existingVariantIndex >= 0) {
+        dataModel.variants[existingVariantIndex] = data;
+      } else {
+        dataModel.variants.push(data);
+      }
+    };
+
     const manageVariat = () => {
       // isManageVariations.value = !isManageVariations.value;
     };
@@ -452,6 +535,22 @@ export default defineComponent({
 
     const deleteProduct = () => {
       visibleConfirm.value = true;
+    };
+
+    // xóa ảnh trong 1 color
+    const deleteImage = (data: Variant, image: string) => {
+      data.images = data.images.filter((x) => x !== image);
+    };
+
+    // xóa ảnh theo màu
+    const deleteImageColor = (color: string) => {
+      dataModel.variants = dataModel.variants.filter((x) => x.color !== color);
+    };
+
+    // câp nhật ảnh theo màu
+    const editImageColor = (variation: Variant) => {
+      selectedColorVariant.value = variation;
+      imageDialogVisible.value = true;
     };
 
     const getApiBrand = async () => {
@@ -505,11 +604,13 @@ export default defineComponent({
       mode,
       dialogVisible,
       specDialogVisible,
+      imageDialogVisible,
       dataModel,
       brandOptions,
       categoryOptions,
       showHideOptions,
       selectedSpecification,
+      selectedColorVariant,
       selectedVariation,
       visibleConfirm,
       specifications,
@@ -520,6 +621,7 @@ export default defineComponent({
       saveProduct,
       saveVariation,
       saveSpecification,
+      saveImage,
       manageVariat,
       addColorVariant,
       editColorVariant,
@@ -528,8 +630,12 @@ export default defineComponent({
       removeSpecification,
       deleteProduct,
       callApiDetete,
+      deleteImage,
+      editImageColor,
+      deleteImageColor,
       //
       TYPE_MANAGE,
+      API_URL,
     };
   },
 });
