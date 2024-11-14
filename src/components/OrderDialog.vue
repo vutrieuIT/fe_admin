@@ -9,7 +9,7 @@
       <label for="id" class="font-semibold w-6rem">id</label>
       <InputText
         disabled
-        v-model="dataModel.order_number"
+        v-model="dataModel.id"
         id="id"
         class="flex-auto"
         autocomplete="off"
@@ -19,7 +19,7 @@
       <label for="user" class="font-semibold w-6rem">user</label>
       <InputText
         disabled
-        v-model="dataModel.full_name"
+        v-model="dataModel.userId"
         id="user"
         class="flex-auto"
         autocomplete="off"
@@ -76,9 +76,11 @@ export default defineComponent({
 
   setup(props, context) {
     const statusOptions = [
-      { label: "Paid", value: "paid" },
-      { label: "Pending", value: "pending" },
-      { label: "Unpaid", value: "unpaid" },
+      { label: "Chờ xác nhận", value: "Chờ xác nhận" },
+      { label: "Xác nhận", value: "Xác nhận" },
+      { label: "Đang giao", value: "Đang giao" },
+      { label: "Đã giao", value: "Đã giao" },
+      { label: "Đã hủy", value: "Đã hủy" },
     ];
 
     const visibleModel = computed({

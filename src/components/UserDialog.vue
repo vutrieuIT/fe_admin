@@ -9,6 +9,7 @@
     <div class="flex align-items-center gap-3 mb-3">
       <label for="username" class="font-semibold w-6rem">Username</label>
       <InputText
+        disabled
         v-model="dataModel.name"
         id="username"
         class="flex-auto"
