@@ -93,6 +93,9 @@ export default defineComponent({
       email: "",
       role: "",
       status: "",
+      phone: "",
+      address: "",
+      addressCode: [] as string[],
     } as User);
 
     const editUser = (user: unknown) => {

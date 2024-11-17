@@ -4,6 +4,7 @@ import DashboardView from "@/views/DashboardView.vue";
 import ProductView from "@/views/ProductView.vue";
 import ManagerProductView from "@/views/ManagerProductView.vue";
 import OrderView from "@/views/OrderView.vue";
+import GHNOrderView from "@/views/GHNOrderView.vue";
 import UserView from "@/views/UserView.vue";
 import AdminView from "@/views/AdminView.vue";
 const routes: Array<RouteRecordRaw> = [
@@ -40,6 +41,11 @@ const routes: Array<RouteRecordRaw> = [
         path: "orders",
         name: "orders",
         component: OrderView,
+      },
+      {
+        path: "orders/ghn/:id",
+        name: "orders-ghn",
+        component: GHNOrderView,
       },
       {
         path: "users",

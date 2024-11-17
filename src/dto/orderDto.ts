@@ -4,10 +4,17 @@ interface OrderDto {
   full_name: string;
   userId: string;
   total: number;
+  totalWeight: number;
   status: string;
   paymentStatus: string;
   paymentType: string;
-  date_create: Date;
+  shippingOrderId: string;
+  shippingOrderStatus: string;
+  toAddress: string;
+  addressCode: string[3];
+  note: string;
+  totalBill: number;
+  createdAt: Date;
 }
 
 export default OrderDto;

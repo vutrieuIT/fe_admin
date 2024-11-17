@@ -1,5 +1,5 @@
 <template>
-  <div class="text-2xl">Orders</div>
+  <div class="text-2xl">Đơn hàng</div>
   <DataTable
     :value="data"
     v-model:rows="rows"
@@ -29,7 +29,9 @@
         <Button class="ml-2" @click="editOrder(slotProps.data)"
           >Cập nhật</Button
         >
-        <Button class="ml-2 mt-1">Đặt GHN</Button>
+        <Button class="ml-2 mt-1" @click="goToGHNOrder(slotProps.data)"
+          >Đặt GHN</Button
+        >
       </template>
     </Column>
     <template #expansion="slotProps">
@@ -55,6 +57,7 @@ import Button from "primevue/button";
 import OrderDialog from "@/components/OrderDialog.vue";
 import { useToast } from "primevue/usetoast";
 import ApiUtils from "@/util/apiUtil";
+import router from "@/router";
 
 export default defineComponent({
   components: {
@@ -99,6 +102,10 @@ export default defineComponent({
         });
     };
 
+    const goToGHNOrder = (order: OrderDto) => {
+      router.push(`/admin/orders/ghn/${order.id}`);
+    };
+
     //
     const callApiInit = async () => {
       await ApiUtils.get("/api/mongo/order")
@@ -127,6 +134,7 @@ export default defineComponent({
       expandedRows,
       editOrder,
       save,
+      goToGHNOrder,
     };
   },
 });
