@@ -23,11 +23,18 @@
         </div>
         <div class="flex flex-column gap-2 mt-2">
           <label class="align-self-start" for="password">Password</label>
-          <InputText
-            id="password"
-            v-model="loginData.password"
-            aria-describedby="password-help"
-          />
+          <IconField>
+            <InputText
+              id="password"
+              v-model="loginData.password"
+              aria-describedby="password-help"
+              :type="isShowPassword ? 'text' : 'password'"
+            />
+            <InputIcon
+              class="pi pi-eye"
+              @click="isShowPassword = !isShowPassword"
+            />
+          </IconField>
           <small
             class="text-red-500"
             id="password-help"
@@ -45,6 +52,8 @@
 <script lang="ts">
 import Button from "primevue/button";
 import InputText from "primevue/inputtext";
+import IconField from "primevue/iconfield";
+import InputIcon from "primevue/inputicon";
 import ApiUtils from "@/util/apiUtil";
 import { useRouter } from "vue-router";
 import { useToast } from "primevue/usetoast";
@@ -66,10 +75,14 @@ export default defineComponent({
   components: {
     Button,
     InputText,
+    IconField,
+    InputIcon,
   },
   setup() {
     const toast = useToast();
     const router = useRouter();
+
+    const isShowPassword = ref(false);
 
     const loginData = ref<LoginDto>({
       account: "",
@@ -129,6 +142,7 @@ export default defineComponent({
 
     return {
       loginData,
+      isShowPassword,
       errorMessageDto,
       validateForm,
       postLogin,

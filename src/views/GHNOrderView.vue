@@ -25,6 +25,8 @@
     <div class="col-4 text-left">{{ order.note }}</div>
     <div class="col-2 text-left">Mã đơn GHN</div>
     <div class="col-4 text-left">{{ order.shippingOrderId }}</div>
+    <div class="col-2 text-left">Trạng thái đơn GHN</div>
+    <div class="col-4 text-left">{{ order.shippingOrderStatus }}</div>
     <div class="col-2 text-left">Phí vận chuyển</div>
     <div class="col-4 text-left">{{ shippingFee }}</div>
     <div class="col-2 text-left">Người trả phí</div>
@@ -81,6 +83,12 @@
         v-if="statusGHNOrder === 2"
         label="Hủy đơn GHN"
         @click="cancelGHNOrder"
+      />
+      <Button
+        class="ml-2"
+        v-if="statusGHNOrder === 3"
+        label="Tái tạo đơn GHN"
+        @click="createGHNOrder"
       />
     </div>
   </div>

@@ -30,7 +30,7 @@
           >Cập nhật</Button
         >
         <Button class="ml-2 mt-1" @click="goToGHNOrder(slotProps.data)"
-          >Đặt GHN</Button
+          >Đơn GHN</Button
         >
       </template>
     </Column>
