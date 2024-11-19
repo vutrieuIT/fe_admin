@@ -126,6 +126,8 @@ export default defineComponent({
       await ApiUtils.post("/api/mongo/employee/login", loginData.value)
         .then((response) => {
           sessionStorage.setItem("token", response.data.token);
+          sessionStorage.setItem("id", response.data.id);
+          sessionStorage.setItem("name", response.data.name);
 
           router.push("/admin/dashboard");
         })

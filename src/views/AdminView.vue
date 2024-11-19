@@ -31,12 +31,22 @@
       <template #end>
         <div class="flex align-items-center gap-2">
           <Avatar image="https://i.pravatar.cc/100?u=1" shape="circle"></Avatar>
-          <p>Admin</p>
-          <Button
-            icon="pi pi-power-off"
-            class="p-button-rounded p-button-text"
-            @click="logout"
-          ></Button>
+          <Button @click="toggleEmployeeMenu">{{ employee.name }}</Button>
+          <OverlayPanel ref="isEmployeeMenuShow">
+            <div id="overlay_panel" class="flex flex-column gap-2">
+              <Button
+                icon="pi pi-user"
+                class="p-button-rounded p-button-text"
+                label="Thông tin cá nhân"
+                @click="openInfoDialog"
+              ></Button>
+              <Button
+                class="p-button-rounded p-button-text"
+                label="Đăng xuất"
+                @click="logout"
+              ></Button>
+            </div>
+          </OverlayPanel>
         </div>
       </template>
     </Menubar>
@@ -49,9 +59,16 @@
       <router-view />
     </div>
   </div>
+  <EmployeeDialog
+    v-model:visible="isVisibleDialog"
+    v-model:data="selectedEmployee"
+    @save="saveEmployee"
+    :mode="ModeEnum.EMPLOYEE"
+  ></EmployeeDialog>
+  <ConfirmPopup></ConfirmPopup>
 </template>
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { defineComponent, onMounted, ref } from "vue";
 import NavigatorComponent from "@/components/NavigatorComponent.vue";
 import Button from "primevue/button";
 import Menubar from "primevue/menubar";
@@ -59,13 +76,30 @@ import InputText from "primevue/inputtext";
 import Avatar from "primevue/avatar";
 import { useRouter } from "vue-router";
 import { useToast } from "primevue/usetoast";
+import EmployeeDto from "@/dto/employeeDto";
+import OverlayPanel from "primevue/overlaypanel";
+import ApiUtils from "@/util/apiUtil";
+import EmployeeDialog, { ModeEnum } from "@/components/EmployeeDialog.vue";
+import { useConfirm } from "primevue/useconfirm";
 
 export default defineComponent({
-  components: { NavigatorComponent, Button, Menubar, InputText, Avatar },
+  components: {
+    NavigatorComponent,
+    Button,
+    Menubar,
+    InputText,
+    Avatar,
+    OverlayPanel,
+    EmployeeDialog,
+  },
   setup() {
     const router = useRouter();
-
     const toast = useToast();
+    const employee = ref({} as EmployeeDto);
+
+    const isEmployeeMenuShow = ref();
+    const isVisibleDialog = ref(false);
+    const selectedEmployee = ref({} as EmployeeDto);
 
     const items = ref([
       {
@@ -83,12 +117,78 @@ export default defineComponent({
       router.push("/login");
       toast.add({
         severity: "success",
-        summary: "Success",
-        detail: "Logged out successfully",
+        summary: "Đăng xuất",
+        detail: "Đăng xuất thành công",
         life: 3000,
       });
     };
-    return { items, logout };
+
+    const openInfoDialog = () => {
+      selectedEmployee.value = { ...employee.value };
+      isVisibleDialog.value = true;
+      isEmployeeMenuShow.value.hide();
+    };
+
+    const getEmployee = async () => {
+      const id = sessionStorage.getItem("id");
+
+      await ApiUtils.get(`/api/mongo/employee/${id}`)
+        .then((res) => {
+          employee.value = res.data;
+        })
+        .catch(() => {
+          toast.add({
+            severity: "error",
+            summary: "Lỗi",
+            detail: "Lấy thông tin nhân viên thất bại",
+            life: 3000,
+          });
+        });
+    };
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const toggleEmployeeMenu = (event: any) => {
+      isEmployeeMenuShow.value.toggle(event);
+    };
+
+    const saveEmployee = async (employee: EmployeeDto) => {
+      await ApiUtils.put(`/api/mongo/employee/update`, employee)
+        .then(() => {
+          toast.add({
+            severity: "success",
+            summary: "Thành công",
+            detail: "Cập nhật nhân viên thành công",
+            life: 3000,
+          });
+          getEmployee();
+        })
+        .catch(() => {
+          toast.add({
+            severity: "error",
+            summary: "Lỗi",
+            detail: "Cập nhật nhân viên thất bại",
+            life: 3000,
+          });
+        });
+    };
+
+    onMounted(() => {
+      getEmployee();
+    });
+
+    return {
+      items,
+      employee,
+      isEmployeeMenuShow,
+      isVisibleDialog,
+      selectedEmployee,
+      logout,
+      toggleEmployeeMenu,
+      saveEmployee,
+      openInfoDialog,
+
+      ModeEnum,
+    };
   },
 });
 </script>

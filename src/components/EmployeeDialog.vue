@@ -36,6 +36,7 @@
         class="col-4 my-1 text-left"
         id="account"
         v-model="dataModel.account"
+        :disabled="mode === ModeEnum.EMPLOYEE"
       />
       <div class="col-2 my-1 text-left" for="password">Mật khẩu</div>
       <InputText
@@ -50,6 +51,7 @@
         :options="EMPLOYEE_ROLE_CONST"
         optionLabel="role"
         optionValue="value"
+        :disabled="mode === ModeEnum.EMPLOYEE"
       />
       <div class="col-2 my-1 text-left" for="status">Trạng thái</div>
       <Dropdown
@@ -58,6 +60,7 @@
         :options="EMPLOYEE_STATUS_CONST"
         optionLabel="status"
         optionValue="value"
+        :disabled="mode === ModeEnum.EMPLOYEE"
       />
     </div>
     <template #footer>
@@ -77,7 +80,13 @@ import Button from "primevue/button";
 import Dialog from "primevue/dialog";
 import Dropdown from "primevue/dropdown";
 import InputText from "primevue/inputtext";
-import { computed, defineComponent, watch } from "vue";
+import { computed, defineComponent, PropType, watch } from "vue";
+
+export enum ModeEnum {
+  NEW = "new",
+  EDIT = "edit",
+  EMPLOYEE = "employee",
+}
 
 export default defineComponent({
   name: "EmployeeDialog",
@@ -101,9 +110,9 @@ export default defineComponent({
       }),
     },
     mode: {
-      type: String,
+      type: String as PropType<ModeEnum>,
       required: false,
-      default: "new",
+      default: ModeEnum.NEW,
     },
   },
 
@@ -138,6 +147,7 @@ export default defineComponent({
 
       EMPLOYEE_ROLE_CONST,
       EMPLOYEE_STATUS_CONST,
+      ModeEnum,
     };
   },
 });
