@@ -8,6 +8,7 @@ import GHNOrderView from "@/views/GHNOrderView.vue";
 import UserView from "@/views/UserView.vue";
 import AdminView from "@/views/AdminView.vue";
 import EmployeeView from "@/views/EmployeeView.vue";
+import DiscountView from "@/views/DiscountView.vue";
 const routes: Array<RouteRecordRaw> = [
   {
     path: "/",
@@ -57,6 +58,11 @@ const routes: Array<RouteRecordRaw> = [
         path: "employees",
         name: "employees",
         component: EmployeeView,
+      },
+      {
+        path: "discounts",
+        name: "discounts",
+        component: DiscountView,
       },
     ],
   },

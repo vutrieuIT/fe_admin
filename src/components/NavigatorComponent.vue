@@ -43,6 +43,7 @@ export default defineComponent({
       { label: "Đơn hàng", icon: "pi pi-shopping-cart", to: "/admin/orders" },
       { label: "Khách hàng", icon: "pi pi-user", to: "/admin/users" },
       { label: "Nhân viên", icon: "pi pi-users", to: "/admin/employees" },
+      { label: "khuyến mãi", icon: "pi pi-gift", to: "/admin/discounts" },
     ]);
 
     // eslint-disable-next-line @typescript-eslint/no-empty-function
