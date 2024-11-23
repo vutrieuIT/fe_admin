@@ -3,7 +3,7 @@
     <div
       class="login-container flex flex-column align-items-center px-4 pb-4 bg-blue-300"
     >
-      <p class="text-4xl mb-0">ADMIN</p>
+      <p class="text-4xl mb-0">QUẢN TRỊ</p>
       <p class="text-4xl mt-0">LAZY STORE</p>
       <div class="login-form">
         <div class="flex flex-column gap-2">
@@ -31,7 +31,7 @@
               :type="isShowPassword ? 'text' : 'password'"
             />
             <InputIcon
-              class="pi pi-eye"
+              :class="`pi ${isShowPassword ? 'pi-eye-slash' : 'pi-eye'}`"
               @click="isShowPassword = !isShowPassword"
             />
           </IconField>
