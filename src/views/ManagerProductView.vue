@@ -269,10 +269,10 @@
   </div>
   <ProductVariationDialog
     v-model:visible="dialogVisible"
-    :data="selectedVariation"
     v-model:specification="selectedSpecification"
+    :data="selectedVariation"
+    :colorList="colorOptions"
     @save="saveVariation"
-    :categoryOptions="categoryOptions"
   />
   <ProductSpecificationDialog
     v-model:visible="specDialogVisible"
@@ -333,6 +333,9 @@ class TYPE_MANAGE {
   static readonly DEFAUT = "default";
 }
 
+interface ColorDropdown {
+  name: string;
+}
 export default defineComponent({
   components: {
     InputText,
@@ -408,6 +411,8 @@ export default defineComponent({
       color: "",
       images: [],
     } as unknown as Variant);
+
+    const colorOptions = ref([] as ColorDropdown[]);
 
     // dropdown của specification
     const expandedRows = ref([]);
@@ -500,6 +505,11 @@ export default defineComponent({
     const addColorVariant = (model: Specification) => {
       selectedSpecification.value = { ...model };
       selectedVariation.value = { color: "", quantity: 0 };
+      colorOptions.value = dataModel.variants.map((x) => {
+        return { name: x.color };
+      });
+      console.log("colorOptions", colorOptions.value);
+
       dialogVisible.value = true;
     };
 
@@ -616,6 +626,7 @@ export default defineComponent({
       specifications,
       expandedRows,
       typeManage,
+      colorOptions,
       updateTypeManage,
       save,
       saveProduct,

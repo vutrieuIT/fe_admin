@@ -117,7 +117,7 @@ export default defineComponent({
     const dataApi = ref([]);
     const data = ref([] as ProductDto[]);
     const selectedProduct = ref({} as ProductDto);
-    const rows = ref(5);
+    const rows = ref(20);
     const first = ref(0);
     const expandedRows = ref({});
     const PRODUCT_STATUS = {

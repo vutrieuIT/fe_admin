@@ -9,7 +9,7 @@
       <label for="color" class="font-semibold w-6rem"> Màu </label>
       <Dropdown
         v-model="dataModel.color"
-        :options="colorList"
+        :options="colorOptions"
         id="color"
         class="flex-auto"
         optionLabel="name"
@@ -42,7 +42,6 @@ import Dialog from "primevue/dialog";
 import ConfirmDialog from "primevue/confirmdialog";
 import { ColorVariant, Specification } from "@/dto/productAdminDto";
 import InputNumber from "primevue/inputnumber";
-import colorList from "@/dto/color";
 import Dropdown from "primevue/dropdown";
 import Button from "primevue/button";
 
@@ -71,8 +70,10 @@ export default defineComponent({
       type: Object as () => Specification,
       required: true,
     },
-    categoryOptions: Array,
-    brandOptions: Array,
+    colorList: {
+      type: Array as () => { name: string }[], // Add this line
+      default: () => [],
+    },
   },
   emits: ["update:visible", "update:specification", "save"],
   setup(props, ctx) {
@@ -95,6 +96,10 @@ export default defineComponent({
       set: (value) => {
         ctx.emit("update:specification", value);
       },
+    });
+
+    const colorOptions = computed(() => {
+      return props.colorList;
     });
 
     watch(
@@ -124,9 +129,9 @@ export default defineComponent({
 
     return {
       isEdit,
-      colorList,
       visibleModel,
       dataModel,
+      colorOptions,
       save,
     };
   },
