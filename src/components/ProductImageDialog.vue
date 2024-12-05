@@ -125,12 +125,26 @@ export default defineComponent({
         formData.append("files", files[i]);
       }
       // gọi api tải ảnh lên
-      await ApiUtils.post("/api/mongo/file/list", formData)
+      await ApiUtils.post("/api/mongo/file/admin/list", formData)
         .then((res) => {
           console.log("upload image done", res);
 
+          if (res.data.predict.length > 0) {
+            toast.add({
+              severity: "warn",
+              summary: "Cảnh báo",
+              detail: `Có ảnh không phù hợp, vui lòng kiểm tra lại ${res.data.predict.join(
+                ", "
+              )}`,
+              life: 3000,
+            });
+          }
+
           // Cập nhật hình ảnh và emit dữ liệu mới
-          dataModel.value.images = [...dataModel.value.images, ...res.data];
+          dataModel.value.images = [
+            ...dataModel.value.images,
+            ...res.data.images,
+          ];
           ctx.emit("update:data", dataModel.value);
 
           toast.add({
