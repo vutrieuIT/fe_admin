@@ -6,7 +6,7 @@
     :style="{ width: '25rem' }"
   >
     <div class="flex align-items-center gap-3 mb-3">
-      <label for="id" class="font-semibold w-6rem">id</label>
+      <label for="id" class="font-semibold w-6rem">Mã đơn hàng</label>
       <InputText
         disabled
         v-model="dataModel.id"
@@ -16,7 +16,7 @@
       />
     </div>
     <div class="flex align-items-center gap-3 mb-3">
-      <label for="user" class="font-semibold w-6rem">user</label>
+      <label for="user" class="font-semibold w-6rem">Khách hàng</label>
       <InputText
         disabled
         v-model="dataModel.userId"
@@ -26,11 +26,22 @@
       />
     </div>
     <div class="flex align-items-center gap-3 mb-3">
-      <label for="status" class="font-semibold w-6rem">status</label>
+      <label for="status" class="font-semibold w-6rem">Trạng thái</label>
       <Dropdown
         v-model="dataModel.status"
         :options="statusOptions"
         id="status"
+        optionLabel="label"
+        optionValue="value"
+        class="flex-auto"
+      />
+    </div>
+    <div class="flex align-items-center gap-3 mb-3">
+      <label for="paymentStatus" class="font-semibold w-6rem">Thanh toán</label>
+      <Dropdown
+        v-model="dataModel.paymentStatus"
+        :options="paymentOptions"
+        id="paymentStatus"
         optionLabel="label"
         optionValue="value"
         class="flex-auto"
@@ -83,6 +94,11 @@ export default defineComponent({
       { label: "Đã hủy", value: "Đã hủy" },
     ];
 
+    const paymentOptions = [
+      { label: "Chưa thanh toán", value: "Chưa thanh toán" },
+      { label: "Đã thanh toán", value: "Đã thanh toán" },
+    ];
+
     const visibleModel = computed({
       get: () => props.visible,
       set: (value) => context.emit("update:visible", value),
@@ -92,6 +108,7 @@ export default defineComponent({
 
     return {
       statusOptions,
+      paymentOptions,
       visibleModel,
       dataModel,
     };

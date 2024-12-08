@@ -18,7 +18,6 @@
     <Column field="totalBill" header="Tổng tiền" sortable></Column>
     <Column field="status" header="Trạng thái" sortable></Column>
     <Column field="paymentStatus" header="Thanh toán" sortable></Column>
-    <Column field="paymentType" header="Kiểu thanh toán" sortable></Column>
     <Column header="Ngày tạo" sortable>
       <template #body="slotProps">
         {{ new Date(slotProps.data.createdAt).toLocaleDateString() }}
