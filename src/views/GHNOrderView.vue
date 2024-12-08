@@ -18,9 +18,9 @@
       {{ new Date(order.createdAt).toLocaleDateString() }}
     </div>
     <div class="col-2 text-left">Số điện thoại</div>
-    <div class="col-4 text-left">{{ user.phone }}</div>
+    <div class="col-4 text-left">{{ order.phoneNumber }}</div>
     <div class="col-2 text-left">Địa chỉ</div>
-    <div class="col-4 text-left">{{ user.address }}</div>
+    <div class="col-4 text-left">{{ order.toAddress }}</div>
     <div class="col-2 text-left">Ghi chú</div>
     <div class="col-4 text-left">{{ order.note }}</div>
     <div class="col-2 text-left">Mã đơn GHN</div>
@@ -202,8 +202,8 @@ export default defineComponent({
         fromPhone: "0339554433",
         fromAddress: "01 Võ Văn Ngân, Linh Chiểu, Thủ Đức, Hồ Chí Minh",
         toName: user.value.name,
-        toPhone: user.value.phone,
-        toAddress: user.value.address,
+        toPhone: order.value.phoneNumber,
+        toAddress: order.value.toAddress,
         note: order.value.note,
         codAmount:
           order.value.status === "Đã thanh toán" ? order.value.totalBill : 0,

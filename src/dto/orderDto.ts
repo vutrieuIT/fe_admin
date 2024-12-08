@@ -11,6 +11,7 @@ interface OrderDto {
   shippingOrderId: string;
   shippingOrderStatus: string;
   toAddress: string;
+  phoneNumber: string;
   addressCode: string[3];
   note: string;
   totalBill: number;
