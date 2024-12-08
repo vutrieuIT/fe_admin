@@ -7,9 +7,14 @@
     style="width: 80%; max-width: 700px"
   >
     <div class="grid mt-4">
-      <div class="col-2 text-left" for="name">Tên</div>
+      <div class="col-2 text-left" for="name">Mã khuyến mãi</div>
       <div class="col-4">
-        <InputText class="text-left" id="name" v-model="dataModel.code" />
+        <InputText
+          class="text-left"
+          id="name"
+          v-model="dataModel.code"
+          :disabled="dataModel.status === 'used'"
+        />
       </div>
       <div class="col-2 text-left" for="discount">Giảm giá</div>
       <div class="col-4">
@@ -17,6 +22,7 @@
           class="text-left"
           id="discount"
           v-model="dataModel.discount"
+          :disabled="dataModel.status === 'used'"
         />
       </div>
       <div class="col-2 text-left" for="discountType">Loại giảm giá</div>
@@ -27,6 +33,7 @@
           :options="DISCOUNT_TYPE_CONST"
           optionLabel="name"
           optionValue="value"
+          :disabled="dataModel.status === 'used'"
         />
       </div>
 
@@ -38,13 +45,22 @@
           :options="DISCOUNT_STATUS_CONST"
           optionLabel="label"
           optionValue="value"
+          :disabled="dataModel.status === 'used'"
         />
       </div>
 
       <div class="col-2 text-left" for="startDate">Ngày bắt đầu</div>
-      <Calendar class="col-4 text-left" v-model="dataModel.startDate" />
+      <Calendar
+        class="col-4 text-left"
+        v-model="dataModel.startDate"
+        :disabled="dataModel.status === 'used'"
+      />
       <div class="col-2 text-left" for="endDate">Ngày kết thúc</div>
-      <Calendar class="col-4 text-left" v-model="dataModel.endDate" />
+      <Calendar
+        class="col-4 text-left"
+        v-model="dataModel.endDate"
+        :disabled="dataModel.status === 'used'"
+      />
     </div>
 
     <template #footer>

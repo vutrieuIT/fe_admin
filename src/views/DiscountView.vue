@@ -16,7 +16,7 @@
     <Column field="discount" header="Giảm giá"></Column>
     <Column field="discountType" header="Loại giảm giá">
       <template #body="slotProp">
-        {{ slotProp.data.value === "amount" ? "Số tiền" : "Phần trăm" }}
+        {{ slotProp.data.discountType === "amount" ? "Số tiền" : "Phần trăm" }}
       </template>
     </Column>
     <Column header="Ngày bắt đầu">
