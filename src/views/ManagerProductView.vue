@@ -431,7 +431,7 @@ export default defineComponent({
       let success = true;
       if (route.params.id) {
         try {
-          await ApiUtils.put(`/api/mongo/san-pham`, dataModel);
+          await ApiUtils.put(`/api/san-pham`, dataModel);
           toast.add({
             severity: "success",
             summary: "Success",
@@ -449,7 +449,7 @@ export default defineComponent({
         }
       } else {
         try {
-          await ApiUtils.post("/api/mongo/san-pham", dataModel);
+          await ApiUtils.post("/api/san-pham", dataModel);
         } catch (error) {
           toast.add({
             severity: "error",
@@ -564,7 +564,7 @@ export default defineComponent({
     };
 
     const getApiBrand = async () => {
-      await ApiUtils.get("/api/mongo/thuong-hieu").then((res) => {
+      await ApiUtils.get("/api/thuong-hieu").then((res) => {
         res.data.forEach((element: { name: string; id: number }) => {
           brandOptions.value.push({ name: element.name, value: element.id });
         });
@@ -573,17 +573,15 @@ export default defineComponent({
 
     const getApiProduct = async () => {
       if (route.params.id) {
-        await ApiUtils.get(`/api/mongo/san-pham/${route.params.id}`).then(
-          (res) => {
-            Object.assign(dataModel, res.data);
-          }
-        );
+        await ApiUtils.get(`/api/san-pham/${route.params.id}`).then((res) => {
+          Object.assign(dataModel, res.data);
+        });
       }
     };
 
     const callApiDetete = async () => {
       visibleConfirm.value = false;
-      await ApiUtils.delete(`/api/mongo/san-pham/${route.params.id}`)
+      await ApiUtils.delete(`/api/san-pham/${route.params.id}`)
         .then(() => {
           toast.add({
             severity: "success",

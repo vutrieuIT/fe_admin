@@ -80,7 +80,7 @@ export default defineComponent({
     };
 
     const getEmployeeList = async () => {
-      await ApiUtils.get("/api/mongo/employee")
+      await ApiUtils.get("/api/employee")
         .then((res) => {
           employeeList.value = res.data;
         })
@@ -96,7 +96,7 @@ export default defineComponent({
 
     const saveEmployee = async (employee: EmployeeDto) => {
       if (employee.id) {
-        await ApiUtils.put(`/api/mongo/employee/update`, employee)
+        await ApiUtils.put(`/api/employee/update`, employee)
           .then(() => {
             toast.add({
               severity: "success",
@@ -115,7 +115,7 @@ export default defineComponent({
             });
           });
       } else {
-        await ApiUtils.post(`/api/mongo/employee/create`, employee)
+        await ApiUtils.post(`/api/employee/create`, employee)
           .then(() => {
             toast.add({
               severity: "success",

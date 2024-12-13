@@ -132,7 +132,7 @@ export default defineComponent({
     const getEmployee = async () => {
       const id = sessionStorage.getItem("id");
 
-      await ApiUtils.get(`/api/mongo/employee/${id}`)
+      await ApiUtils.get(`/api/employee/${id}`)
         .then((res) => {
           employee.value = res.data;
         })
@@ -152,7 +152,7 @@ export default defineComponent({
     };
 
     const saveEmployee = async (employee: EmployeeDto) => {
-      await ApiUtils.put(`/api/mongo/employee/update`, employee)
+      await ApiUtils.put(`/api/employee/update`, employee)
         .then(() => {
           toast.add({
             severity: "success",

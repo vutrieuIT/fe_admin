@@ -159,7 +159,7 @@ export default defineComponent({
     });
 
     const getOrder = async () => {
-      await ApiUtils.get(`/api/mongo/order-detail/${orderId}`)
+      await ApiUtils.get(`/api/order-detail/${orderId}`)
         .then((response) => {
           order.value = response.data.order;
         })
@@ -174,7 +174,7 @@ export default defineComponent({
     };
 
     const getUser = async () => {
-      await ApiUtils.get(`/api/mongo/user-info/${order.value.userId}`)
+      await ApiUtils.get(`/api/user-info/${order.value.userId}`)
         .then((response) => {
           user.value = response.data;
         })
@@ -208,7 +208,7 @@ export default defineComponent({
         codAmount:
           order.value.status === "Đã thanh toán" ? order.value.totalBill : 0,
       };
-      await ApiUtils.post(`/api/mongo/ghn/create-ship-order`, body)
+      await ApiUtils.post(`/api/ghn/create-ship-order`, body)
         .then(() => {
           toast.add({
             severity: "success",
@@ -229,7 +229,7 @@ export default defineComponent({
     };
 
     const cancelGHNOrder = async () => {
-      await ApiUtils.post(`/api/mongo/ghn/cancel-ship-order/${orderId}`)
+      await ApiUtils.post(`/api/ghn/cancel-ship-order/${orderId}`)
         .then(() => {
           toast.add({
             severity: "success",
@@ -250,7 +250,7 @@ export default defineComponent({
     };
 
     const getShippingFee = async () => {
-      await ApiUtils.get(`/api/mongo/ghn/shipping-fee/${order.value.id}/2`)
+      await ApiUtils.get(`/api/ghn/shipping-fee/${order.value.id}/2`)
         .then((response) => {
           shippingFee.value = response.data;
         })

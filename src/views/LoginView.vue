@@ -123,7 +123,7 @@ export default defineComponent({
       if (!validateForm()) {
         return;
       }
-      await ApiUtils.post("/api/mongo/employee/login", loginData.value)
+      await ApiUtils.post("/api/employee/login", loginData.value)
         .then((response) => {
           sessionStorage.setItem("token", response.data.token);
           sessionStorage.setItem("id", response.data.id);

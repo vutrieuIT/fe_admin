@@ -129,7 +129,7 @@ export default defineComponent({
     };
 
     const getApiBrand = async () => {
-      await ApiUtils.get("/api/mongo/thuong-hieu").then((res) => {
+      await ApiUtils.get("/api/thuong-hieu").then((res) => {
         res.data.forEach((element: { name: string; id: number }) => {
           brandOptions.value.push({ name: element.name, value: element.id });
         });

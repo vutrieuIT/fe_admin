@@ -125,7 +125,7 @@ export default defineComponent({
         formData.append("files", files[i]);
       }
       // gọi api tải ảnh lên
-      await ApiUtils.post("/api/mongo/file/admin/list", formData)
+      await ApiUtils.post("/api/file/admin/list", formData)
         .then((res) => {
           console.log("upload image done", res);
 
@@ -136,7 +136,6 @@ export default defineComponent({
               detail: `Có ảnh không phù hợp, vui lòng kiểm tra lại ${res.data.predict.join(
                 ", "
               )}`,
-              life: 3000,
             });
           }
 

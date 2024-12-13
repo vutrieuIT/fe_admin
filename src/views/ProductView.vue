@@ -148,7 +148,7 @@ export default defineComponent({
 
     const save = (data: ProductDto) => {
       visible.value = false;
-      ApiUtils.post("/api/mongo/san-pham", data)
+      ApiUtils.post("/api/san-pham", data)
         .then(() => {
           toast.add({
             severity: "success",
@@ -169,7 +169,7 @@ export default defineComponent({
 
     const callApiDetete = async () => {
       visibleConfirm.value = false;
-      ApiUtils.delete(`/api/mongo/san-pham/${selectedProduct.value.id}`)
+      ApiUtils.delete(`/api/san-pham/${selectedProduct.value.id}`)
         .then(() => {
           toast.add({
             severity: "success",
@@ -190,7 +190,7 @@ export default defineComponent({
     };
 
     const callApiInit = async () => {
-      await ApiUtils.get("/api/mongo/san-pham")
+      await ApiUtils.get("/api/san-pham")
         .then((res) => {
           console.log(res.data);
           dataApi.value = res.data;

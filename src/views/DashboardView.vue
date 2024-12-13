@@ -54,7 +54,7 @@ export default defineComponent({
     const callApiSales = async () => {
       // call api
       await ApiUtils.get(
-        `/api/mongo/sumary/sales?startDate=${fromDate.value
+        `/api/sumary/sales?startDate=${fromDate.value
           .toISOString()
           .slice(0, 10)}&endDate=${toDate.value.toISOString().slice(0, 10)}`
       ).then((res) => {
@@ -65,7 +65,7 @@ export default defineComponent({
     const callApiRevenue = async () => {
       // call api
       await ApiUtils.get(
-        `/api/mongo/sumary/revenue?startDate=${fromDate.value
+        `/api/sumary/revenue?startDate=${fromDate.value
           .toISOString()
           .slice(0, 10)}&endDate=${toDate.value.toISOString().slice(0, 10)}`
       ).then((res) => {

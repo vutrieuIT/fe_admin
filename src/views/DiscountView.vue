@@ -96,7 +96,7 @@ export default defineComponent({
     };
 
     const getDiscounts = async () => {
-      await ApiUtils.get("/api/mongo/discount")
+      await ApiUtils.get("/api/discount")
         .then((res) => {
           discounts.value = res.data;
         })
@@ -124,7 +124,7 @@ export default defineComponent({
 
     const saveDiscount = async (discount: DiscountDto) => {
       if (discount.id) {
-        await ApiUtils.put("/api/mongo/discount/update", discount)
+        await ApiUtils.put("/api/discount/update", discount)
           .then(() => {
             getDiscounts();
             displayDialog.value = false;
@@ -144,7 +144,7 @@ export default defineComponent({
             })
           );
       } else {
-        await ApiUtils.post("/api/mongo/discount/create", discount)
+        await ApiUtils.post("/api/discount/create", discount)
           .then(() => {
             getDiscounts();
             displayDialog.value = false;
