@@ -34,7 +34,7 @@ export default defineComponent({
     const router = useRouter();
     const tabActived = ref<number>(0);
     const listNav = ref<MenuItem[]>([
-      { label: "Dashboard", icon: "pi pi-home", to: "/admin/dashboard" },
+      { label: "Thống kê", icon: "pi pi-home", to: "/admin/dashboard" },
       {
         label: "Sản phẩm",
         icon: "pi pi-shopping-cart",
