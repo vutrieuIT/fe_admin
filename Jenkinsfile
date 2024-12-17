@@ -18,8 +18,20 @@ pipeline {
         stage('Build') {
             steps {
                 withDockerRegistry(credentialsId: 'docker-hub', url: 'https://index.docker.io/v1/') {
-                    sh 'docker build -t trieuvu/admin:new .'
-                    sh 'docker push trieuvu/admin:new'
+                    sh 'docker build -t trieuvu/kltn_admin:new .'
+                    sh 'docker push trieuvu/kltn_admin:new'
+                }
+            }
+        }
+        stage('Deploy') {
+            steps {
+                script {
+                    // Áp dụng file YAML cho Deployment và Service
+                    sh 'kubectl apply -f admin-deployment.yml'
+
+                    // Lấy URL của service
+                    def appUrl = sh(script: "minikube service admin-service --url", returnStdout: true).trim()
+                    echo "Application is running at: ${appUrl}"
                 }
             }
         }
