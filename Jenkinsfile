@@ -6,15 +6,15 @@ pipeline {
                 git branch: 'protect/deploy', url: 'https://github.com/vutrieuIT/fe_admin.git'
             }
         }
-       stage('Check Branch') {
-            steps {
-                script {
-                    if (env.GIT_BRANCH != 'origin/protect/deploy') {
-                        error("Not on protect/deploy branch, exiting pipeline.")
-                    }
-                }
-            }
-        }
+    //    stage('Check Branch') {
+    //         steps {
+    //             script {
+    //                 if (env.GIT_BRANCH != 'origin/protect/deploy') {
+    //                     error("Not on protect/deploy branch, exiting pipeline.")
+    //                 }
+    //             }
+    //         }
+    //     }
         stage('Build') {
             steps {
                 withDockerRegistry(credentialsId: 'docker-hub', url: 'https://index.docker.io/v1/') {
@@ -23,18 +23,18 @@ pipeline {
                 }
             }
         }
-        stage('Deploy') {
-            steps {
-                script {
-                    // Áp dụng file YAML cho Deployment và Service
-                    sh 'kubectl apply -f admin-deployment.yml'
+        // stage('Deploy') {
+        //     steps {
+        //         script {
+        //             // Áp dụng file YAML cho Deployment và Service
+        //             sh 'kubectl apply -f admin-deployment.yml'
 
-                    // Lấy URL của service
-                    def appUrl = sh(script: "minikube service admin-service --url", returnStdout: true).trim()
-                    echo "Application is running at: ${appUrl}"
-                }
-            }
-        }
+        //             // Lấy URL của service
+        //             def appUrl = sh(script: "minikube service admin-service --url", returnStdout: true).trim()
+        //             echo "Application is running at: ${appUrl}"
+        //         }
+        //     }
+        // }
     }
     post {
         success {
