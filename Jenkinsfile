@@ -17,10 +17,19 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
-                    // Deploy the service using Docker Compose
+                    // Stop and remove any existing container
                     sh '''
-                    docker-compose down || true
-                    docker-compose up -d
+                    docker stop admin-web || true
+                    docker rm admin-web || true
+                    '''
+
+                    // Run the new container
+                    sh '''
+                    docker run -d --name admin-web \
+                        -p 81:80 \
+                        -e API_URL=http://host.docker.internal:8001 \
+                        --restart always \
+                        trieuvu/kltn_admin:new
                     '''
                 }
             }
@@ -28,10 +37,12 @@ pipeline {
     }
     post {
         success {
-            mail bcc: '', body: 'build admin done', cc: '', from: '', replyTo: '', subject: 'jenkins build', to: 'vutrieu2002@gmail.com'
+            mail bcc: '', body: 'Build and deploy admin service successfully completed.', 
+                cc: '', from: '', replyTo: '', subject: 'Jenkins Build Success', to: 'vutrieu2002@gmail.com'
         }
         failure {
-            mail bcc: '', body: 'build admin fail', cc: '', from: '', replyTo: '', subject: 'jenkins build', to: 'vutrieu2002@gmail.com'
+            mail bcc: '', body: 'Build or deploy admin service failed.', 
+                cc: '', from: '', replyTo: '', subject: 'Jenkins Build Failure', to: 'vutrieu2002@gmail.com'
         }
     }
 }
