@@ -1,0 +1,15 @@
+services:
+  admin-web:
+    image: trieuvu/kltn_admin:new
+    ports:
+      - "81:80"
+    environment:
+      - API_URL=http://host.docker.internal:8001
+    deploy:
+      resources:
+        limits:
+          cpus: '0.2'
+          memory: 256M
+        reservations:
+          cpus: '0.1'
+          memory: 128M
