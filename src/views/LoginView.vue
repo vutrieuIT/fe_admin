@@ -4,7 +4,7 @@
       class="login-container flex flex-column align-items-center px-4 pb-4 bg-blue-300"
     >
       <p class="text-4xl mb-0">QUẢN TRỊ</p>
-      <p class="text-4xl mt-0">LAZY STORE</p>
+      <p class="text-4xl mt-0">LAZY STORE TEST</p>
       <div class="login-form">
         <div class="flex flex-column gap-2">
           <label class="align-self-start" for="username">Tài khoản</label>
